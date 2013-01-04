@@ -1,6 +1,6 @@
 # Viết tài liệu sử dụng Markdown
 * Markdown là ngôn ngữ đánh dấu văn bản (kiểu như HTML) được sử dụng trên GitHub.
-* Cú pháp của Markdown rất đơn giản, có thể xem trên [Wikipedia](http://en.wikipedia.org/wiki/Markdown) hoặc trên [trang chủ của dự án](http://daringfireball.net/projects/markdown/).
+* Cú pháp của Markdown rất đơn giản, có thể xem trên [Wikipedia](http://en.wikipedia.org/wiki/Markdown) hoặc trên [trang chủ của dự án](http://daringfireball.net/projects/markdown/) hoặc [cheatsheet của mashery.com](http://support.mashery.com/docs/customizing_your_portal/Markdown_Cheat_Sheet)
 * Để soạn thảo tài liệu Markdown chỉ cần sử dụng một trình soạn thảo như *Sublime Text 2* hoặc *Notepad++*
 
 # Làm việc với Git
