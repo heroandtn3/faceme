@@ -1,3 +1,5 @@
+<meta charset="utf-8" />
+
 # Khảo sát, đặc tả yêu cầu
 ## Phát biểu bài toán
 Xây dựng chương trình chơi cờ tướng
@@ -25,6 +27,15 @@ Xây dựng chương trình chơi cờ tướng
 
 # Phân tích thiết kế
 ## Biểu đồ use case
+### Use case tổng quan
+![Use Case](./UML/UseCase.png)
+
+### Use case chi tiết cho chức năng thi đấu
+![Use Case thi đấu](./UML/UseCase_thidau.png)
+
+## Biểu đồ lớp
+### Biểu đồ lớp tổng quan
+![Class Diagram](./UML/ClassDiagram.png)
 
 # Công nghệ và thuật toán sử dụng
 ## Giải thuật trí tuệ nhân tạo
