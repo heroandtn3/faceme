@@ -26,7 +26,7 @@ public class Match {
 	private Level level;
 	private GameState state;
 	private Board board;
-	private int[] Chess;
+	private Chess[] chess;
 	private Player playerBlack, playerRed;
 
 	/**
@@ -60,12 +60,12 @@ public class Match {
 		this.board = board;
 	}
 
-	public int[] getChess() {
-		return Chess;
+	public Chess[] getChess() {
+		return chess;
 	}
 
-	public void setChess(int[] chess) {
-		Chess = chess;
+	public void setChess(Chess[] chess) {
+		this.chess = chess;
 	}
 
 	public Player getPlayerBlack() {
