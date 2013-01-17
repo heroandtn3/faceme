@@ -1,3 +1,6 @@
+/**
+ * Quan tuong
+ */
 /*
  * Author HoangNv, 29.09.2012
  */
@@ -6,17 +9,22 @@ package model.chess;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
+
+import model.Board;
 import model.ChessPosition;
-import model.Match;
+import model.Constant;
 
 public class King extends Chess {
 
-	public King(String img, int row, int col) {
-		super(img, row, col);
+	public King(Board board) {
+		super(board);
+		imgRed = new ImageIcon(Constant.CHESS_DIR + "tuongdo.png").getImage();
+		imgBlack = new ImageIcon(Constant.CHESS_DIR + "tuongden.png").getImage();
 	}
 
 	@Override
-	public List <ChessPosition> getPosCanMove(Match match, ChessPosition current,  int side) {
+	public List <ChessPosition> getPosCanMove(ChessPosition current) {
 		List <ChessPosition> pos = new ArrayList<ChessPosition>();
 		int x,y,upBound,lowBound,leftBound,rightBound,value,i,j;
 		boolean loMatTuong ;
@@ -25,7 +33,7 @@ public class King extends Chess {
 		ChessPosition CpTemp;
 		x = current.getCol() ;
 		y = current.getRow() ;
-		value = match.getTablePos()[y][x];
+		value = board.getTable()[y][x];
 
 		//khoi tao gioi han di chuyen cho quan tuong
 		if (y<=2) {
@@ -46,13 +54,13 @@ public class King extends Chess {
 			x=current.getCol()+dx[i];
 			y=current.getRow()+dy[i];
 			if (((x>=leftBound)&&(x<=rightBound))&&((y>=upBound)&&(y<=lowBound))){
-				if ((match.getTablePos()[y][x]==0)||(match.getTablePos()[y][x]*value < 0)){
+				if ((board.getTable()[y][x]==0)||(board.getTable()[y][x]*value < 0)){
 					//Kiem tra xem co lo mat tuong ?
 					loMatTuong = false;
 					if (upBound == 0) {
 						for (j = y +1 ; j<= 9 ; j++) {
-							if (match.getTablePos()[j][x] !=0) {
-								if (match.getTablePos()[j][x] + value ==0 ) {
+							if (board.getTable()[j][x] !=0) {
+								if (board.getTable()[j][x] + value ==0 ) {
 									loMatTuong= true;
 								}
 								break;
@@ -60,8 +68,8 @@ public class King extends Chess {
 						}
 					} else {
 						for (j = y - 1 ; j>=0 ; j--) {
-							if (match.getTablePos()[j][x] !=0) {
-								if (match.getTablePos()[j][x] + value == 0 ) {
+							if (board.getTable()[j][x] !=0) {
+								if (board.getTable()[j][x] + value == 0 ) {
 									loMatTuong= true;
 								}
 								break;
@@ -72,7 +80,7 @@ public class King extends Chess {
 					
 					if (!loMatTuong) {
 						
-						if (match.getTablePos()[y][x]*value < 0) {
+						if (board.getTable()[y][x]*value < 0) {
 							CpTemp = new ChessPosition(x,y,true);
 						} else {
 							CpTemp = new ChessPosition(x,y,false);
@@ -87,7 +95,7 @@ public class King extends Chess {
 	}
 	
 	@Override
-	public List <ChessPosition> getTargetPos(Match match, ChessPosition current,  int side) {
+	public List <ChessPosition> getTargetPos(ChessPosition current) {
 		List <ChessPosition> pos = new ArrayList<ChessPosition>();
 		int x,y,upBound,lowBound,leftBound,rightBound,value,i,j;
 		boolean loMatTuong ;
@@ -96,7 +104,7 @@ public class King extends Chess {
 		ChessPosition CpTemp;
 		x = current.getCol() ;
 		y = current.getRow() ;
-		value = match.getTablePos()[y][x];
+		value = board.getTable()[y][x];
 
 		//khoi tao gioi han di chuyen cho quan tuong
 		if (y<=2) {
@@ -117,13 +125,13 @@ public class King extends Chess {
 			x=current.getCol()+dx[i];
 			y=current.getRow()+dy[i];
 			if (((x>=leftBound)&&(x<=rightBound))&&((y>=upBound)&&(y<=lowBound))){
-				if (match.getTablePos()[y][x]!=0){
+				if (board.getTable()[y][x]!=0){
 					//Kiem tra xem co lo mat tuong ?
 					loMatTuong = false;
 					if (upBound == 0) {
 						for (j = y +1 ; j<= 9 ; j++) {
-							if (match.getTablePos()[j][x] !=0) {
-								if (match.getTablePos()[j][x] + value ==0 ) {
+							if (board.getTable()[j][x] !=0) {
+								if (board.getTable()[j][x] + value ==0 ) {
 									loMatTuong= true;
 								}
 								break;
@@ -131,8 +139,8 @@ public class King extends Chess {
 						}
 					} else {
 						for (j = y - 1 ; j>=0 ; j--) {
-							if (match.getTablePos()[j][x] !=0) {
-								if (match.getTablePos()[j][x] + value == 0 ) {
+							if (board.getTable()[j][x] !=0) {
+								if (board.getTable()[j][x] + value == 0 ) {
 									loMatTuong= true;
 								}
 								break;
@@ -143,7 +151,7 @@ public class King extends Chess {
 					
 					if (!loMatTuong) {
 						
-						if (match.getTablePos()[y][x]*value < 0) {
+						if (board.getTable()[y][x]*value < 0) {
 							CpTemp = new ChessPosition(x,y,true);
 						} else {
 							CpTemp = new ChessPosition(x,y,false);

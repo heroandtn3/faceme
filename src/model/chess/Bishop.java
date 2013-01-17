@@ -1,20 +1,28 @@
+/**
+ * Quan tinh
+ */
 package model.chess;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
+
+import model.Board;
 import model.ChessPosition;
-import model.Match;
+import model.Constant;
 
 public class Bishop extends Chess {
-	//Match Match = new Match();
-	public Bishop(String img, int row, int col) {
-		super(img, row, col);
-		// TODO Auto-generated constructor stub
+	
+
+	public Bishop(Board board) {
+		super(board);
+		imgRed = new ImageIcon(Constant.CHESS_DIR + "tinhdo.png").getImage();
+		imgBlack = new ImageIcon(Constant.CHESS_DIR + "tinhden.png").getImage();
 	}
 
 	@Override
-	public List<ChessPosition> getPosCanMove(Match match, ChessPosition current,int side) {
+	public List<ChessPosition> getPosCanMove(ChessPosition current) {
 		List<ChessPosition> pos = new ArrayList<ChessPosition>();
 		int x,y,upBound,lowBound,leftBound,rightBound,value;
 		int dx[] = {0,2,2,-2,-2};
@@ -29,7 +37,7 @@ public class Bishop extends Chess {
 		
 		x = current.getCol() ;
 		y = current.getRow() ;
-		value = match.getTablePos()[y][x];
+		value = board.getTable()[y][x];
 		if (y<=4) {
 			upBound = 0;
 			lowBound= 4;
@@ -48,9 +56,9 @@ public class Bishop extends Chess {
 			tempX=current.getCol() + cdx[i];
 			tempY=current.getRow() + cdy[i];
 			if (((x>=leftBound)&&(x<=rightBound))&&((y>=upBound)&&(y<=lowBound))){
-				if ((match.getTablePos()[y][x]==0)||(match.getTablePos()[y][x]*value < 0)){
-					if (match.getTablePos()[tempY][tempX]==0) {
-						if (match.getTablePos()[y][x]*value < 0) {
+				if ((board.getTable()[y][x]==0)||(board.getTable()[y][x]*value < 0)){
+					if (board.getTable()[tempY][tempX]==0) {
+						if (board.getTable()[y][x]*value < 0) {
 							CpTemp = new ChessPosition(x,y,true);
 						} else {
 							CpTemp = new ChessPosition(x,y,false);
@@ -66,7 +74,7 @@ public class Bishop extends Chess {
 	}
 	
 	@Override
-	public List<ChessPosition> getTargetPos(Match match, ChessPosition current,int side) {
+	public List<ChessPosition> getTargetPos(ChessPosition current) {
 		List<ChessPosition> pos = new ArrayList<ChessPosition>();
 		int x,y,upBound,lowBound,leftBound,rightBound,value;
 		int dx[] = {0,2,2,-2,-2};
@@ -81,7 +89,7 @@ public class Bishop extends Chess {
 		
 		x = current.getCol() ;
 		y = current.getRow() ;
-		value = match.getTablePos()[y][x];
+		value = board.getTable()[y][x];
 		if (y<=4) {
 			upBound = 0;
 			lowBound= 4;
@@ -100,9 +108,9 @@ public class Bishop extends Chess {
 			tempX=current.getCol() + cdx[i];
 			tempY=current.getRow() + cdy[i];
 			if (((x>=leftBound)&&(x<=rightBound))&&((y>=upBound)&&(y<=lowBound))){
-				if (match.getTablePos()[y][x]!=0){
-					if (match.getTablePos()[tempY][tempX]==0) {
-						if (match.getTablePos()[y][x]*value < 0) {
+				if (board.getTable()[y][x]!=0){
+					if (board.getTable()[tempY][tempX]==0) {
+						if (board.getTable()[y][x]*value < 0) {
 							CpTemp = new ChessPosition(x,y,true);
 						} else {
 							CpTemp = new ChessPosition(x,y,false);

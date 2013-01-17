@@ -19,6 +19,14 @@ package model;
 
 import java.util.Observable;
 
+import model.chess.Advisor;
+import model.chess.Bishop;
+import model.chess.Cannon;
+import model.chess.Chess;
+import model.chess.King;
+import model.chess.Knight;
+import model.chess.Pawn;
+import model.chess.Rook;
 /**
  * @author heroandtn3
  * @date Jan 7, 2013
@@ -49,6 +57,21 @@ public class Match extends Observable {
 	 */
 	public Match() {
 		board = new Board(table);
+		initChess();
+	}
+	
+	private void initChess() {
+		chess = new Chess[8];
+		chess[0] = null;
+		chess[1] = new Pawn(board);
+		chess[2] = new Advisor(board);
+		chess[3] = new Bishop(board);
+		chess[4] = new Knight(board);
+		chess[5] = new Cannon(board);
+		chess[6] = new Rook(board);
+		chess[7] = new King(board);
+		
+		
 	}
 	
 	/**

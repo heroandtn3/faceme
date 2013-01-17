@@ -1,3 +1,6 @@
+/**
+ * Quan sy
+ */
 /*
  * Author : HoangNV , 28.9.2012
  */
@@ -6,17 +9,23 @@ package model.chess;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
+
+import model.Board;
 import model.ChessPosition;
-import model.Match;
+import model.Constant;
 
 public class Advisor extends Chess {
-	//Match Match = new Match();
-	public Advisor(String img, int row, int col) {
-		super(img, row, col);
+
+	
+	public Advisor(Board board) {
+		super(board);
+		imgRed = new ImageIcon(Constant.CHESS_DIR + "sydo.png").getImage();
+		imgBlack = new ImageIcon(Constant.CHESS_DIR + "syden.png").getImage();
 	}
 
 	@Override
-	public List <ChessPosition> getPosCanMove(Match match, ChessPosition current, int side) {
+	public List <ChessPosition> getPosCanMove(ChessPosition current) {
 		List <ChessPosition> pos = new ArrayList<ChessPosition>();
 		ChessPosition CpTemp ;
 		int x,y,upBound,lowBound,leftBound,rightBound,value;
@@ -26,7 +35,7 @@ public class Advisor extends Chess {
 		 
 		x = current.getCol() ;
 		y = current.getRow() ;
-		value = match.getTablePos()[y][x];
+		value = board.getTable()[y][x];
 
 		if (y <=2 ) {
 			upBound = 0;
@@ -44,8 +53,8 @@ public class Advisor extends Chess {
 			x=current.getCol()+dx[i];
 			y=current.getRow()+dy[i];
 			if (((x>=leftBound)&&(x<=rightBound))&&((y>=upBound)&&(y<=lowBound))){
-				if ((match.getTablePos()[y][x]==0)||(match.getTablePos()[y][x]*value < 0)){
-					if (match.getTablePos()[y][x]*value < 0) {
+				if ((board.getTable()[y][x]==0)||(board.getTable()[y][x]*value < 0)){
+					if (board.getTable()[y][x]*value < 0) {
 						CpTemp = new ChessPosition(x,y,true);
 					} else {
 						CpTemp = new ChessPosition(x,y,false);
@@ -59,7 +68,7 @@ public class Advisor extends Chess {
 	}
 	
 	@Override
-	public List <ChessPosition> getTargetPos(Match match, ChessPosition current, int side) {
+	public List <ChessPosition> getTargetPos(ChessPosition current) {
 		List <ChessPosition> pos = new ArrayList<ChessPosition>();
 		ChessPosition CpTemp ;
 		int x,y,upBound,lowBound,leftBound,rightBound,value;
@@ -69,7 +78,7 @@ public class Advisor extends Chess {
 		 
 		x = current.getCol() ;
 		y = current.getRow() ;
-		value = match.getTablePos()[y][x];
+		value = board.getTable()[y][x];
 
 		if (y <=2 ) {
 			upBound = 0;
@@ -87,8 +96,8 @@ public class Advisor extends Chess {
 			x=current.getCol()+dx[i];
 			y=current.getRow()+dy[i];
 			if (((x>=leftBound)&&(x<=rightBound))&&((y>=upBound)&&(y<=lowBound))){
-				if (match.getTablePos()[y][x]!=0){
-					if (match.getTablePos()[y][x]*value < 0) {
+				if (board.getTable()[y][x]!=0){
+					if (board.getTable()[y][x]*value < 0) {
 						CpTemp = new ChessPosition(x,y,true);
 					} else {
 						CpTemp = new ChessPosition(x,y,false);
