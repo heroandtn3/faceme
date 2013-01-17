@@ -17,11 +17,13 @@
  */
 package model;
 
+import java.util.Observable;
+
 /**
  * @author heroandtn3
  * @date Jan 7, 2013
  */
-public class Match {
+public class Match extends Observable {
 
 	private Level level;
 	private GameState state;
@@ -35,7 +37,22 @@ public class Match {
 	public Match() {
 
 	}
+	
+	/**
+	 * Ham thuc hien di chuyen quan co tu vi tri cu sang vi tri moi
+	 * @param oldPos
+	 * @param newPos
+	 */
+	public void move(ChessPosition oldPos, ChessPosition newPos) {
+		int tmp = board.getTable()[oldPos.getRow()][oldPos.getCol()];
+		board.getTable()[newPos.getRow()][newPos.getCol()] = tmp;
+		
+		// danh dau la da thay doi va gui yeu cau update den cac observers
+		setChanged();
+		notifyObservers();
+	}
 
+	/* get, set -------------------------------------------------------------*/
 	public Level getLevel() {
 		return level;
 	}

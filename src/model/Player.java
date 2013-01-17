@@ -36,7 +36,7 @@ public class Player {
 	
 	
 	public void makeMove(ChessPosition oldPos, ChessPosition newPos) {
-		match.getBoard().setAMove(oldPos, newPos);
+		match.move(oldPos, newPos);
 	}
 
 }

@@ -35,11 +35,6 @@ public class Board {
 	public int[][] getTable() {
 		return table;
 	}
-	
-	public void setAMove(ChessPosition oldPos, ChessPosition newPos) {
-		table[newPos.getRow()][newPos.getCol()]
-				= table[oldPos.getRow()][oldPos.getCol()];
-	}
 
 	public void setTable(int[][] table) {
 		this.table = table;
