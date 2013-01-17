@@ -21,7 +21,6 @@ import java.awt.event.MouseListener;
 
 import model.ChessPosition;
 import model.Match;
-import view.BoardPanel;
 
 /**
  * @author heroandtn3
@@ -54,17 +53,22 @@ public class BoardEvent implements MouseListener {
 		int x = e.getX();
 		int y = e.getY();
 		int[] pos = convert(x, y);
-		if (pos == null) return; // kiem tra tinh hop le
+		
+		// kiem tra tinh hop le
+		// loai bo neu la null
+		if (pos == null) return; 
+		
 		System.out.println(pos[0] + " - " + pos[1]);
-		if (posSaved == null) {
-			posSaved = pos;
-		} else {
+		if (posSaved != null) {
 			ChessPosition oldPos = new ChessPosition(posSaved[0], posSaved[1]);
 			ChessPosition newPos = new ChessPosition(pos[0], pos[1]);
-			match.move(oldPos, newPos);
-			posSaved = null;
+			match.move(oldPos, newPos); // di chuyen quan
+			posSaved = null; // xoa vet
+			
+		} else if (match.getBoard().getTable()[pos[0]][pos[1]] != 0) {
+			// loai bo o trong, chi luu cac vet la o co quan co
+			posSaved = pos; // luu vet
 		}
-		
 	}
 
 	@Override
