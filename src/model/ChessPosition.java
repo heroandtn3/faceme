@@ -33,7 +33,11 @@ public class ChessPosition {
 	public ChessPosition() {
 
 	}
-	
+	public ChessPosition(int x, int y ,boolean bool){
+		this.col = x;
+		this.row = y;
+		this.killable=bool;
+	}
 	public ChessPosition(int row, int col) {
 		this.row = row;
 		this.col = col;
