@@ -16,8 +16,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package view;
 
-import javax.swing.SwingUtilities;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+
+import model.Match;
 
 /**
  * @author heroandtn3
@@ -34,7 +36,7 @@ public class Main {
 			public void run() {
 				JFrame frame = new JFrame("Faceme 1.x");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				GamePanel gamePanel = new GamePanel();
+				GamePanel gamePanel = new GamePanel(new Match());
 				frame.getContentPane().add(gamePanel);
 				frame.pack();
 				frame.setLocationRelativeTo(null);

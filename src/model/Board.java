@@ -31,6 +31,10 @@ public class Board {
 	public Board() {
 		table = new int[9][10];
 	}
+	
+	public Board(int[][] table) {
+		this.table = table;
+	}
 
 	public int[][] getTable() {
 		return table;

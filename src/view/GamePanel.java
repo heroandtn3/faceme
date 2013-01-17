@@ -17,9 +17,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package view;
 
 import java.awt.CardLayout;
-import java.awt.Dimension;
 
 import javax.swing.JPanel;
+
+import control.BoardEvent;
+
+import model.Match;
 
 /**
  * @author heroandtn3
@@ -30,6 +33,7 @@ public class GamePanel extends JPanel {
 	private BoardPanel boardPanel;
 	private CardLayout card = new CardLayout();
 
+	private Match match;
 	/**
 	 * 
 	 */
@@ -38,12 +42,14 @@ public class GamePanel extends JPanel {
 	/**
 	 * 
 	 */
-	public GamePanel() {
-		setLayout(card);
+	public GamePanel(Match match) {
+		this.match = match;
 		initGUI();
 	}
 	
 	private void initGUI() {
+		setLayout(card);
+		
 		boardPanel = new BoardPanel(this);
 		add(boardPanel, BoardPanel.KEY);
 	}
@@ -52,4 +58,7 @@ public class GamePanel extends JPanel {
 		card.show(this, key);
 	}
 
+	public Match getMatch() {
+		return match;
+	}
 }

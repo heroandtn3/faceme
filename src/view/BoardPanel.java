@@ -19,12 +19,14 @@ package view;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.ImageIcon;
 
 import model.Constant;
+import model.Match;
+import control.BoardEvent;
 
 
 /**
@@ -39,18 +41,8 @@ public class BoardPanel extends CardPanel {
 	private static final long serialVersionUID = 1L;
 	public final static String KEY = "BoardPanel";
 	
-	private int[][] table = {
-		{6,  4,  3,  2,  7,  2,  3,  4,  6},
-		{0,  0,  0,  0,  0,  0,  0,  0,  0},
-		{0,  5,  0,  0,  0,  0,  0,  5,  0},
-		{1,  0,  1,  0,  1,  0,  1,  0,  1},
-		{0,  0,  0,  0,  0,  0,  0,  0,  0},
-		{0,  0,  0,  0,  0,  0,  0,  0,  0},
-		{-1, 0, -1,  0, -1,  0, -1,  0, -1},
-		{0, -5,  0,  0,  0,  0,  0, -5,  0},
-		{0,  0,  0,  0,  0,  0,  0,  0,  0},
-		{-6,-4, -3, -2, -7, -2, -3, -4, -6} 
-	};
+	private Match match;
+	private int[][] table;
 	
 	private Image imgBoard;
 	private Image imgTuongDo, imgSyDo, imgTinhDo, imgXeDo, 
@@ -62,45 +54,28 @@ public class BoardPanel extends CardPanel {
 	 */
 	public BoardPanel(GamePanel gamePanel) {
 		super(gamePanel);
-		setPreferredSize(new Dimension(483, 500));
+		this.match = gamePanel.getMatch();
+		init();
 		initGUI();
 	}
 	
-	private void initGUI() {
-		loadImages();
-		
-		addMouseListener(new MouseListener() {
-			
+	private void init() {
+		table = match.getBoard().getTable();
+		match.addObserver(new Observer() {
+
 			@Override
-			public void mouseReleased(MouseEvent e) {
-				System.out.println(e.getPoint());
-				
+			public void update(Observable o, Object arg) {
+				repaint();
 			}
 			
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
 		});
+	}
+	
+	private void initGUI() {
+		setPreferredSize(new Dimension(483, 500));
+		loadImages();
+		addMouseListener(new BoardEvent(match));
+		
 	}
 	
 	private void loadImages() {
@@ -206,5 +181,5 @@ public class BoardPanel extends CardPanel {
 			default:
 				return null;
 		}
-	} 
+	}
 }

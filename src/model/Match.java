@@ -30,12 +30,25 @@ public class Match extends Observable {
 	private Board board;
 	private Chess[] chess;
 	private Player playerBlack, playerRed;
+	
+	private int[][] table = {
+			{6,  4,  3,  2,  7,  2,  3,  4,  6},
+			{0,  0,  0,  0,  0,  0,  0,  0,  0},
+			{0,  5,  0,  0,  0,  0,  0,  5,  0},
+			{1,  0,  1,  0,  1,  0,  1,  0,  1},
+			{0,  0,  0,  0,  0,  0,  0,  0,  0},
+			{0,  0,  0,  0,  0,  0,  0,  0,  0},
+			{-1, 0, -1,  0, -1,  0, -1,  0, -1},
+			{0, -5,  0,  0,  0,  0,  0, -5,  0},
+			{0,  0,  0,  0,  0,  0,  0,  0,  0},
+			{-6,-4, -3, -2, -7, -2, -3, -4, -6} 
+		};
 
 	/**
 	 * 
 	 */
 	public Match() {
-
+		board = new Board(table);
 	}
 	
 	/**
@@ -44,8 +57,11 @@ public class Match extends Observable {
 	 * @param newPos
 	 */
 	public void move(ChessPosition oldPos, ChessPosition newPos) {
-		int tmp = board.getTable()[oldPos.getRow()][oldPos.getCol()];
-		board.getTable()[newPos.getRow()][newPos.getCol()] = tmp;
+		int[][] mt = board.getTable();
+		
+		int tmp = mt[oldPos.getRow()][oldPos.getCol()];
+		mt[oldPos.getRow()][oldPos.getCol()] = 0; // vi tri cu chuyen ve 0
+		mt[newPos.getRow()][newPos.getCol()] = tmp;
 		
 		// danh dau la da thay doi va gui yeu cau update den cac observers
 		setChanged();
