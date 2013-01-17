@@ -119,9 +119,7 @@ public class Match extends Observable {
 	public Chess[] getChess() {
 		return chess;
 	}
-	public int[][] getTablePos() {
-		return table;
-	}
+
 	public void setChess(Chess[] chess) {
 		this.chess = chess;
 	}
