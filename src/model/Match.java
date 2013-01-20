@@ -27,6 +27,7 @@ import model.chess.King;
 import model.chess.Knight;
 import model.chess.Pawn;
 import model.chess.Rook;
+
 /**
  * @author heroandtn3
  * @date Jan 7, 2013

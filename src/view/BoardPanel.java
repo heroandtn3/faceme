@@ -57,13 +57,13 @@ public class BoardPanel extends CardPanel {
 
 	private void init() {
 		table = match.getBoard().getTable();
+		
+		// cai dat observer cho match
 		match.addObserver(new Observer() {
-
 			@Override
 			public void update(Observable o, Object arg) {
 				repaint();
 			}
-
 		});
 	}
 
@@ -91,19 +91,29 @@ public class BoardPanel extends CardPanel {
 		drawChess(g);
 	}
 
+	/**
+	 * Ve ban co
+	 * @param g
+	 */
 	private void drawBoard(Graphics g) {
 		g.drawImage(imgBoard, 0, 0, null);
 	}
 
+	/**
+	 * Ve cac quan co
+	 * @param g
+	 */
 	public void drawChess(Graphics g) {
 		for (int row = 0; row < 10; row++) {
 			for (int col = 0; col < 9; col++) {
-				int[] pos = convert(row, col);
 				int value = table[row][col];
-				if (value != 0) { // co quan co o do
+				if (value != 0) { // kiem tra xem co quan co khong
+					// neu co thi tien hanh ve
 					Image img = match.getChess()[Math.abs(value)]
-							.getShape(value);
+							.getShape(value); // lay hinh anh cua ban co de ve
 					if (img != null) {
+						int[] pos = convert(row, col); // convert row, col 
+														// sang x, y de ve
 						g.drawImage(img, pos[0], pos[1], null);
 					}
 				}
@@ -111,6 +121,14 @@ public class BoardPanel extends CardPanel {
 		}
 	}
 
+	/**
+	 * Chuyen toa do ban co row, col sang toa do x, y
+	 * @param row
+	 * @param col
+	 * @return: mang 1 chieu chua 2 phan tu: 
+	 * [0]: x
+	 * [1]: y 
+	 */
 	private int[] convert(int row, int col) {
 		int x = 30 + col * 53 - 21;
 		int y = 25 + row * 50 - 21;

@@ -1,3 +1,7 @@
+/**
+ * Lop xu ly su kien click chuot vao BoardPanel
+ */
+
 /*
 Copyright 2013 heroandtn3 (@sangnd.info)
 
@@ -30,6 +34,7 @@ public class BoardEvent implements MouseListener {
 
 	private Match match;
 	private int[] posSaved;
+	
 	/**
 	 * 
 	 */
@@ -74,7 +79,6 @@ public class BoardEvent implements MouseListener {
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
