@@ -19,11 +19,14 @@ package view;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.ImageIcon;
 
+import model.ChessPosition;
 import model.Constant;
 import model.Match;
 import control.BoardEvent;
@@ -42,8 +45,13 @@ public class BoardPanel extends CardPanel {
 
 	private Match match;
 	private int[][] table;
+	private int[] posSelected;
+	private List<ChessPosition> posCanMove;
 
 	private Image imgBoard;
+	private Image imgSelect;
+	private Image imgCanMove;
+	private Image imgCanKill;
 
 	/**
 	 * 
@@ -65,6 +73,9 @@ public class BoardPanel extends CardPanel {
 				repaint();
 			}
 		});
+		
+		posSelected = null;
+		posCanMove = new ArrayList<ChessPosition>();
 	}
 
 	private void initGUI() {
@@ -81,6 +92,11 @@ public class BoardPanel extends CardPanel {
 		 * Kich thuoc o: 55 x 50
 		 */
 		imgBoard = new ImageIcon(Constant.BOARD_DIR + "board.png").getImage();
+		imgSelect = new ImageIcon(Constant.IMAGE_DIR + "select.png").getImage();
+		imgCanMove = new ImageIcon(
+				Constant.IMAGE_DIR + "canmove.png").getImage();
+		imgCanKill = new ImageIcon(
+				Constant.IMAGE_DIR + "cankill.png").getImage();
 	}
 
 	@Override
@@ -89,6 +105,8 @@ public class BoardPanel extends CardPanel {
 
 		drawBoard(g);
 		drawChess(g);
+		drawSelected(g);
+		drawPosCanMove(g);
 	}
 
 	/**
@@ -103,7 +121,7 @@ public class BoardPanel extends CardPanel {
 	 * Ve cac quan co
 	 * @param g
 	 */
-	public void drawChess(Graphics g) {
+	private void drawChess(Graphics g) {
 		for (int row = 0; row < 10; row++) {
 			for (int col = 0; col < 9; col++) {
 				int value = table[row][col];
@@ -114,11 +132,31 @@ public class BoardPanel extends CardPanel {
 					if (img != null) {
 						int[] pos = convert(row, col); // convert row, col 
 														// sang x, y de ve
-						g.drawImage(img, pos[0], pos[1], null);
+						g.drawImage(img, pos[0] - 21, pos[1] - 21, null);
 					}
 				}
 			}
 		}
+	}
+	
+	private void drawSelected(Graphics g) {
+		if (posSelected != null) {
+			int[] pos = convert(posSelected[0], posSelected[1]);
+			g.drawImage(imgSelect, pos[0] - 21, pos[1] - 21, 42, 42, null);
+			posSelected = null; // ve xong thi xoa vet
+		}
+	}
+	
+	private void drawPosCanMove(Graphics g) {
+		for (ChessPosition posCM : posCanMove) {
+			int[] pos = convert(posCM.getRow(), posCM.getCol());
+			if (posCM.isKillable()) {
+				g.drawImage(imgCanKill, pos[0] - 15, pos[1] - 15, null);
+			} else {
+				g.drawImage(imgCanMove, pos[0] - 15, pos[1] - 15, null);
+			}
+		}
+		posCanMove.clear();
 	}
 
 	/**
@@ -130,9 +168,29 @@ public class BoardPanel extends CardPanel {
 	 * [1]: y 
 	 */
 	private int[] convert(int row, int col) {
-		int x = 30 + col * 53 - 21;
-		int y = 25 + row * 50 - 21;
+		int x = 30 + col * 53;
+		int y = 25 + row * 50;
 		return (new int[] { x, y });
+	}
+	
+	/*get, set --------------------------------------------------------------*/
+
+	public int[] getPosSelected() {
+		return posSelected;
+	}
+
+	public void setPosSelected(int[] posSelected) {
+		this.posSelected = posSelected;
+		repaint();
+	}
+
+	public List<ChessPosition> getPosCanMove() {
+		return posCanMove;
+	}
+
+	public void setPosCanMove(List<ChessPosition> posCanMove) {
+		this.posCanMove = posCanMove;
+		repaint();
 	}
 
 }

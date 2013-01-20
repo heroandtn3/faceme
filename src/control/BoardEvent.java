@@ -25,6 +25,8 @@ import java.awt.event.MouseListener;
 
 import model.ChessPosition;
 import model.Match;
+import model.chess.Chess;
+import view.BoardPanel;
 
 /**
  * @author heroandtn3
@@ -33,16 +35,35 @@ import model.Match;
 public class BoardEvent implements MouseListener {
 
 	private Match match;
-	private int[] posSaved;
+	private Chess[] chess;
+	private int[][] table;
+	
+	/**
+	 * Mang luu vi tri da chon
+	 * [0]: row
+	 * [1]: col
+	 */
+	private int[] posSelected;
 	
 	/**
 	 * 
 	 */
 	public BoardEvent(Match match) {
 		this.match = match;
-		posSaved = null;
+		chess = match.getChess();
+		table = match.getBoard().getTable();
+		posSelected = null;
 	}
 	
+	/**
+	 * Ham convert tu x, y sang row, col
+	 * @param x
+	 * @param y
+	 * @return: Neu x, y hop le thi tra ve mang int:
+	 * [0]: row
+	 * [1]: col
+	 * 			Neu khong thi tra ve: null
+	 */
 	private int[] convert(int x, int y) {
 		int row = (y - 25 + 21) / 50;
 		int col = (x - 30 + 21) / 53;
@@ -64,15 +85,21 @@ public class BoardEvent implements MouseListener {
 		if (pos == null) return; 
 		
 		System.out.println(pos[0] + " - " + pos[1]);
-		if (posSaved != null) {
-			ChessPosition oldPos = new ChessPosition(posSaved[0], posSaved[1]);
+		if (posSelected != null) {
+			ChessPosition oldPos = new ChessPosition(posSelected[0], posSelected[1]);
 			ChessPosition newPos = new ChessPosition(pos[0], pos[1]);
 			match.move(oldPos, newPos); // di chuyen quan
-			posSaved = null; // xoa vet
+			posSelected = null; // xoa vet
 			
-		} else if (match.getBoard().getTable()[pos[0]][pos[1]] != 0) {
+		} else if (table[pos[0]][pos[1]] != 0) {
 			// loai bo o trong, chi luu cac vet la o co quan co
-			posSaved = pos; // luu vet
+			posSelected = pos; // luu vet
+			BoardPanel board = (BoardPanel) (e.getSource());
+			int value = table[pos[0]][pos[1]];
+			ChessPosition currentPos = new ChessPosition(pos[0], pos[1]);
+			board.setPosCanMove(chess[Math.abs(value)].getPosCanMove(currentPos));
+			board.setPosSelected(pos);
+			
 		}
 	}
 
@@ -97,6 +124,10 @@ public class BoardEvent implements MouseListener {
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public void setPosSelected(int[] posSelected) {
+		this.posSelected = posSelected;
 	}
 
 }
