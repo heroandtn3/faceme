@@ -19,6 +19,8 @@ package view;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -29,13 +31,12 @@ import javax.swing.ImageIcon;
 import model.ChessPosition;
 import model.Constant;
 import model.Match;
-import control.BoardEvent;
 
 /**
  * @author heroandtn3
  * @date Jan 17, 2013
  */
-public class BoardPanel extends CardPanel {
+public class BoardPanel extends CardPanel implements MouseListener {
 
 	/**
 	 * 
@@ -81,7 +82,7 @@ public class BoardPanel extends CardPanel {
 	private void initGUI() {
 		setPreferredSize(new Dimension(483, 500));
 		loadImages();
-		addMouseListener(new BoardEvent(match));
+		addMouseListener(this);
 
 	}
 
@@ -99,6 +100,7 @@ public class BoardPanel extends CardPanel {
 				Constant.IMAGE_DIR + "cankill.png").getImage();
 	}
 
+	/*draw method------------------------------------------------------------*/
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -130,7 +132,7 @@ public class BoardPanel extends CardPanel {
 					Image img = match.getChess()[Math.abs(value)]
 							.getShape(value); // lay hinh anh cua ban co de ve
 					if (img != null) {
-						int[] pos = convert(row, col); // convert row, col 
+						int[] pos = convertToXY(row, col); // convert row, col 
 														// sang x, y de ve
 						g.drawImage(img, pos[0] - 21, pos[1] - 21, null);
 					}
@@ -141,15 +143,14 @@ public class BoardPanel extends CardPanel {
 	
 	private void drawSelected(Graphics g) {
 		if (posSelected != null) {
-			int[] pos = convert(posSelected[0], posSelected[1]);
+			int[] pos = convertToXY(posSelected[0], posSelected[1]);
 			g.drawImage(imgSelect, pos[0] - 21, pos[1] - 21, 42, 42, null);
-			posSelected = null; // ve xong thi xoa vet
 		}
 	}
 	
 	private void drawPosCanMove(Graphics g) {
 		for (ChessPosition posCM : posCanMove) {
-			int[] pos = convert(posCM.getRow(), posCM.getCol());
+			int[] pos = convertToXY(posCM.getRow(), posCM.getCol());
 			if (posCM.isKillable()) {
 				g.drawImage(imgCanKill, pos[0] - 15, pos[1] - 15, null);
 			} else {
@@ -158,6 +159,8 @@ public class BoardPanel extends CardPanel {
 		}
 		posCanMove.clear();
 	}
+	
+	/*some utilities---------------------------------------------------------*/
 
 	/**
 	 * Chuyen toa do ban co row, col sang toa do x, y
@@ -167,10 +170,81 @@ public class BoardPanel extends CardPanel {
 	 * [0]: x
 	 * [1]: y 
 	 */
-	private int[] convert(int row, int col) {
+	private int[] convertToXY(int row, int col) {
 		int x = 30 + col * 53;
 		int y = 25 + row * 50;
 		return (new int[] { x, y });
+	}
+	
+	/**
+	 * Ham convert tu x, y sang row, col
+	 * @param x
+	 * @param y
+	 * @return: Neu x, y hop le thi tra ve mang int:
+	 * [0]: row
+	 * [1]: col
+	 * 			Neu khong thi tra ve: null
+	 */
+	private int[] convertToRowCol(int x, int y) {
+		int row = (y - 25 + 21) / 50;
+		int col = (x - 30 + 21) / 53;
+		if (row >= 0 && row < 10 && col >= 0 && col < 9) {
+			return (new int[] {row, col});
+		} else {
+			return null;
+		}
+	}
+	
+	/*mouse event------------------------------------------------------------*/
+	
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		int x = e.getX();
+		int y = e.getY();
+		int[] pos = convertToRowCol(x, y);
+		
+		// kiem tra tinh hop le
+		// loai bo neu la null
+		if (pos == null) return; 
+		
+		System.out.println(pos[0] + " - " + pos[1]);
+		if (posSelected != null) {
+			ChessPosition oldPos = new ChessPosition(posSelected[0], posSelected[1]);
+			ChessPosition newPos = new ChessPosition(pos[0], pos[1]);
+			match.move(oldPos, newPos); // di chuyen quan
+			posSelected = null; // xoa vet
+			
+		} else if (table[pos[0]][pos[1]] != 0) {
+			// loai bo o trong, chi luu cac vet la o co quan co
+			posSelected = pos; // luu vet
+			int value = Math.abs(table[pos[0]][pos[1]]);
+			ChessPosition currentPos = new ChessPosition(pos[0], pos[1]);
+			setPosCanMove(match.getChess()[value].getPosCanMove(currentPos));
+			setPosSelected(pos);
+		}
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	/*get, set --------------------------------------------------------------*/
