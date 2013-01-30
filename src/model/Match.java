@@ -170,22 +170,6 @@ public class Match extends Observable {
 		this.chess = chess;
 	}
 
-	public Side getPlayerBlack() {
-		return playerBlack;
-	}
-
-	public void setPlayerBlack(Side playerBlack) {
-		this.playerBlack = playerBlack;
-	}
-
-	public Side getPlayerRed() {
-		return playerRed;
-	}
-
-	public void setPlayerRed(Side playerRed) {
-		this.playerRed = playerRed;
-	}
-
 	public List<ChessPosition> getPosCanMove() {
 		return posCanMove;
 	}
