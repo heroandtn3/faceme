@@ -17,9 +17,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package control;
 
+import java.util.List;
+
 import model.ChessPosition;
 import model.Level;
 import model.Match;
+import model.Side;
 
 /**
  * @author heroandtn3
@@ -28,17 +31,22 @@ import model.Match;
 public class ComputerMinmax implements Computer {
 
 	private Match match;
+	private Side side;
+	private MoveGenerator moveGenerator;
 	/**
 	 * 
 	 */
-	public ComputerMinmax(Match match) {
+	public ComputerMinmax(Match match, Side side) {
 		this.match = match;
+		this.side = side;
+		moveGenerator = new MoveGeneratorNormal(match);
 	}
 
 	@Override
 	public ChessPosition[] getBestMove(Level level) {
-		// TODO Auto-generated method stub
-		return null;
+		List<ChessPosition[]> allMoves = moveGenerator.getMoves(side);
+		int x = (int) (Math.random() * allMoves.size());  
+		return moveGenerator.getMoves(side).get(x);
 	}
 
 }

@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
+import control.Computer;
+import control.ComputerMinmax;
+
 import model.chess.Advisor;
 import model.chess.Bishop;
 import model.chess.Cannon;
@@ -42,7 +45,7 @@ public class Match extends Observable {
 	private Side currentSide;
 	private Board board;
 	private Chess[] chess;
-	private Side playerBlack, playerRed;
+	private Computer computer;
 	
 	private int[][] table = {
 			{6,  4,  3,  2,  7,  2,  3,  4,  6},
@@ -70,7 +73,8 @@ public class Match extends Observable {
 		posSelected = null;
 		posCanMove = new ArrayList<ChessPosition>();
 		state = GameState.PLAYING;
-		currentSide = Side.RED;
+		currentSide = Side.BLACK;
+		computer = new ComputerMinmax(this, Side.RED);
 	}
 	
 	private void initChess() {
@@ -213,6 +217,12 @@ public class Match extends Observable {
 			
 			// di chuyen
 			this.move(oldPos, newPos);
+			
+			// may tinh di chuyen
+			if (currentSide == Side.RED) {
+				ChessPosition[] move = computer.getBestMove(level);
+				this.move(move[0], move[1]);
+			}
 		}
 		
 	}
