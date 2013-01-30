@@ -68,6 +68,7 @@ public class Match extends Observable {
 		initChess();
 		posSelected = null;
 		posCanMove = new ArrayList<ChessPosition>();
+		state = GameState.BLACK_THINKING;
 	}
 	
 	private void initChess() {
@@ -101,6 +102,10 @@ public class Match extends Observable {
 		// clear posCanMove
 		this.posCanMove.clear();
 		
+		// switch player
+		state = (state == GameState.BLACK_THINKING) ? 
+				GameState.RED_THINKING : GameState.BLACK_THINKING;
+		
 		// danh dau la da thay doi va gui yeu cau update den cac observers
 		setChanged();
 		notifyObservers();
@@ -118,6 +123,16 @@ public class Match extends Observable {
 		// thong bao cho view update
 		setChanged();
 		notifyObservers();
+	}
+	
+	private boolean isChooseForMove(int[] pos) {
+		int value = table[pos[0]][pos[1]];
+		if ((state == GameState.RED_THINKING && value > 0) ||
+			(state == GameState.BLACK_THINKING && value < 0)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/* get, set -------------------------------------------------------------*/
@@ -182,7 +197,7 @@ public class Match extends Observable {
 	}
 
 	public void setPosSelected(int[] pos) {
-		if (this.posSelected == null) { // neu chua co pos nao duoc chon
+		if (isChooseForMove(pos)) { // chon quan de di chuyen
 			// loai bo pos khong hop le
 			if (table[pos[0]][pos[1]] == 0) return;
 			
@@ -191,8 +206,8 @@ public class Match extends Observable {
 			
 			// update pos can move
 			updatePosCanMove();
-		} else { // neu da co pos duoc chon
-			// di chuyen quan
+		} else if (this.posSelected != null){ // neu da co pos duoc chon
+			// thi di chuyen quan den vi tri moi
 			
 			// vi tri di chuyen den phai nam trong posCanMove
 			boolean validPos = false;
@@ -205,6 +220,7 @@ public class Match extends Observable {
 			}
 			if (validPos == false) return;
 		
+			// vi tri hop le thi tien hanh di chuyens
 			ChessPosition oldPos = 
 					new ChessPosition(posSelected[0], posSelected[1]);
 			ChessPosition newPos = new ChessPosition(pos[0], pos[1]);
