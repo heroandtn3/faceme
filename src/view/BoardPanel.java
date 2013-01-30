@@ -136,7 +136,6 @@ public class BoardPanel extends CardPanel implements MouseListener {
 	}
 	
 	private void drawSelected(Graphics g) {
-		System.out.println("Veee");
 		int[] posSelected = match.getPosSelected();
 		if (posSelected != null) {
 			int[] pos = convertToXY(posSelected[0], posSelected[1]);
@@ -214,37 +213,20 @@ public class BoardPanel extends CardPanel implements MouseListener {
 		
 		System.out.println(pos[0] + " - " + pos[1]);
 		match.setPosSelected(pos);
-		/*if (posSelected != null) {
-			ChessPosition oldPos = new ChessPosition(posSelected[0], posSelected[1]);
-			ChessPosition newPos = new ChessPosition(pos[0], pos[1]);
-			match.move(oldPos, newPos); // di chuyen quan
-			posSelected = null; // xoa vet
-			
-		} else if (table[pos[0]][pos[1]] != 0) {
-			// loai bo o trong, chi luu cac vet la o co quan co
-			posSelected = pos; // luu vet
-			int value = Math.abs(table[pos[0]][pos[1]]);
-			ChessPosition currentPos = new ChessPosition(pos[0], pos[1]);
-			setPosCanMove(match.getChess()[value].getPosCanMove(currentPos));
-			setPosSelected(pos);
-		}*/
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
