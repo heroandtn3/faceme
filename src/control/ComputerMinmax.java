@@ -19,19 +19,20 @@ package control;
 
 import model.ChessPosition;
 import model.Level;
-import model.Player;
+import model.Match;
 
 /**
  * @author heroandtn3
  * @date Jan 7, 2013
  */
-public class ComputerMinmax extends Player implements Computer {
+public class ComputerMinmax implements Computer {
 
+	private Match match;
 	/**
 	 * 
 	 */
-	public ComputerMinmax() {
-		// TODO Auto-generated constructor stub
+	public ComputerMinmax(Match match) {
+		this.match = match;
 	}
 
 	@Override

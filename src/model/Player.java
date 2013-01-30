@@ -21,22 +21,7 @@ package model;
  * @author heroandtn3
  * @date Jan 7, 2013
  */
-public class Player {
-	
-	private Match match;
-
-	/**
-	 * 
-	 */
-	public Player() {}
-	
-	public Player(Match match) {
-		this.match = match;
-	}
-	
-	
-	public void makeMove(ChessPosition oldPos, ChessPosition newPos) {
-		match.move(oldPos, newPos);
-	}
-
+public enum Player {
+	RED, 
+	BLACK
 }

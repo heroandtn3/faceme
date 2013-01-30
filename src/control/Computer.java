@@ -27,8 +27,8 @@ import model.Level;
 public interface Computer {
 	/**
 	 * 
-	 * @param level: do kho
-	 * @return: mang 2 phan tu ChessPosition:
+	 * @param level do kho
+	 * @return mang 2 phan tu ChessPosition:
 	 * [0]: oldPos
 	 * [1]: newPos
 	 */

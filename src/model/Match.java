@@ -39,6 +39,7 @@ public class Match extends Observable {
 	// game attributes
 	private Level level;
 	private GameState state;
+	private Player currentPlayer;
 	private Board board;
 	private Chess[] chess;
 	private Player playerBlack, playerRed;
@@ -68,7 +69,8 @@ public class Match extends Observable {
 		initChess();
 		posSelected = null;
 		posCanMove = new ArrayList<ChessPosition>();
-		state = GameState.BLACK_THINKING;
+		state = GameState.PLAYING;
+		currentPlayer = Player.RED;
 	}
 	
 	private void initChess() {
@@ -103,8 +105,8 @@ public class Match extends Observable {
 		this.posCanMove.clear();
 		
 		// switch player
-		state = (state == GameState.BLACK_THINKING) ? 
-				GameState.RED_THINKING : GameState.BLACK_THINKING;
+		currentPlayer = (currentPlayer == Player.BLACK) ?
+				Player.RED : Player.BLACK;
 		
 		// danh dau la da thay doi va gui yeu cau update den cac observers
 		setChanged();
@@ -127,8 +129,8 @@ public class Match extends Observable {
 	
 	private boolean isChooseForMove(int[] pos) {
 		int value = table[pos[0]][pos[1]];
-		if ((state == GameState.RED_THINKING && value > 0) ||
-			(state == GameState.BLACK_THINKING && value < 0)) {
+		if ((currentPlayer == Player.RED && value > 0) ||
+			(currentPlayer == Player.BLACK && value < 0)) {
 			return true;
 		} else {
 			return false;

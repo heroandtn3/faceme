@@ -23,10 +23,9 @@ package model;
  */
 public enum GameState {
 	NONE,
+	PLAYING,
 	PAUSE,
 	DRAW,
 	BLACK_WON, 
-	RED_WON, 
-	BLACK_THINKING,
-	RED_THINKING;
+	RED_WON
 }
