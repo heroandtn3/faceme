@@ -17,6 +17,8 @@
  */
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 
 import model.chess.Advisor;
@@ -34,6 +36,7 @@ import model.chess.Rook;
  */
 public class Match extends Observable {
 
+	// game attributes
 	private Level level;
 	private GameState state;
 	private Board board;
@@ -52,6 +55,10 @@ public class Match extends Observable {
 			{0,  0,  0,  0,  0,  0,  0,  0,  0},
 			{-6,-4, -3, -2, -7, -2, -3, -4, -6} 
 		};
+	
+	// game state attribues
+	private List<ChessPosition> posCanMove;
+	private int[] posSelected;
 
 	/**
 	 * 
@@ -59,6 +66,8 @@ public class Match extends Observable {
 	public Match() {
 		board = new Board(table);
 		initChess();
+		posSelected = null;
+		posCanMove = new ArrayList<ChessPosition>();
 	}
 	
 	private void initChess() {
@@ -86,8 +95,27 @@ public class Match extends Observable {
 		int tmp = mt[oldPos.getRow()][oldPos.getCol()];
 		mt[oldPos.getRow()][oldPos.getCol()] = 0; // vi tri cu chuyen ve 0
 		mt[newPos.getRow()][newPos.getCol()] = tmp;
+		// xoa vet
+		this.posSelected = null;
+		
+		// clear posCanMove
+		this.posCanMove.clear();
 		
 		// danh dau la da thay doi va gui yeu cau update den cac observers
+		setChanged();
+		notifyObservers();
+	}
+	
+	private void updatePosCanMove() {
+		if (posSelected == null) {
+			posCanMove.clear();
+		} else {
+			int value = Math.abs(table[posSelected[0]][posSelected[1]]);
+			ChessPosition currentPos = 
+					new ChessPosition(posSelected[0], posSelected[1]);
+			posCanMove = chess[value].getPosCanMove(currentPos);
+		}
+		// thong bao cho view update
 		setChanged();
 		notifyObservers();
 	}
@@ -139,6 +167,52 @@ public class Match extends Observable {
 
 	public void setPlayerRed(Player playerRed) {
 		this.playerRed = playerRed;
+	}
+
+	public List<ChessPosition> getPosCanMove() {
+		return posCanMove;
+	}
+
+	public void setPosCanMove(List<ChessPosition> posCanMove) {
+		this.posCanMove = posCanMove;
+	}
+
+	public int[] getPosSelected() {
+		return posSelected;
+	}
+
+	public void setPosSelected(int[] pos) {
+		if (this.posSelected == null) { // neu chua co pos nao duoc chon
+			// loai bo pos khong hop le
+			if (table[pos[0]][pos[1]] == 0) return;
+			
+			// neu hop le thi danh dau pos da chon
+			this.posSelected = pos;
+			
+			// update pos can move
+			updatePosCanMove();
+		} else { // neu da co pos duoc chon
+			// di chuyen quan
+			
+			// vi tri di chuyen den phai nam trong posCanMove
+			boolean validPos = false;
+			for (ChessPosition posCM : posCanMove) {
+				if (posCM.getRow() == pos[0] &&
+					posCM.getCol() == pos[1]) {
+					validPos = true;
+					break;
+				}
+			}
+			if (validPos == false) return;
+		
+			ChessPosition oldPos = 
+					new ChessPosition(posSelected[0], posSelected[1]);
+			ChessPosition newPos = new ChessPosition(pos[0], pos[1]);
+			
+			// di chuyen
+			this.move(oldPos, newPos);
+		}
+		
 	}
 
 }

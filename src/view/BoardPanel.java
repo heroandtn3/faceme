@@ -21,7 +21,6 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -46,8 +45,6 @@ public class BoardPanel extends CardPanel implements MouseListener {
 
 	private Match match;
 	private int[][] table;
-	private int[] posSelected;
-	private List<ChessPosition> posCanMove;
 
 	private Image imgBoard;
 	private Image imgSelect;
@@ -74,9 +71,6 @@ public class BoardPanel extends CardPanel implements MouseListener {
 				repaint();
 			}
 		});
-		
-		posSelected = null;
-		posCanMove = new ArrayList<ChessPosition>();
 	}
 
 	private void initGUI() {
@@ -142,6 +136,8 @@ public class BoardPanel extends CardPanel implements MouseListener {
 	}
 	
 	private void drawSelected(Graphics g) {
+		System.out.println("Veee");
+		int[] posSelected = match.getPosSelected();
 		if (posSelected != null) {
 			int[] pos = convertToXY(posSelected[0], posSelected[1]);
 			g.drawImage(imgSelect, pos[0] - 21, pos[1] - 21, 42, 42, null);
@@ -149,6 +145,11 @@ public class BoardPanel extends CardPanel implements MouseListener {
 	}
 	
 	private void drawPosCanMove(Graphics g) {
+		List<ChessPosition> posCanMove = match.getPosCanMove();
+		
+		// verify posCanMove
+		if (posCanMove == null) return;
+		
 		for (ChessPosition posCM : posCanMove) {
 			int[] pos = convertToXY(posCM.getRow(), posCM.getCol());
 			if (posCM.isKillable()) {
@@ -157,7 +158,6 @@ public class BoardPanel extends CardPanel implements MouseListener {
 				g.drawImage(imgCanMove, pos[0] - 15, pos[1] - 15, null);
 			}
 		}
-		posCanMove.clear();
 	}
 	
 	/*some utilities---------------------------------------------------------*/
@@ -213,7 +213,8 @@ public class BoardPanel extends CardPanel implements MouseListener {
 		if (pos == null) return; 
 		
 		System.out.println(pos[0] + " - " + pos[1]);
-		if (posSelected != null) {
+		match.setPosSelected(pos);
+		/*if (posSelected != null) {
 			ChessPosition oldPos = new ChessPosition(posSelected[0], posSelected[1]);
 			ChessPosition newPos = new ChessPosition(pos[0], pos[1]);
 			match.move(oldPos, newPos); // di chuyen quan
@@ -226,7 +227,7 @@ public class BoardPanel extends CardPanel implements MouseListener {
 			ChessPosition currentPos = new ChessPosition(pos[0], pos[1]);
 			setPosCanMove(match.getChess()[value].getPosCanMove(currentPos));
 			setPosSelected(pos);
-		}
+		}*/
 	}
 
 	@Override
@@ -245,26 +246,6 @@ public class BoardPanel extends CardPanel implements MouseListener {
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
-	}
-	
-	/*get, set --------------------------------------------------------------*/
-
-	public int[] getPosSelected() {
-		return posSelected;
-	}
-
-	public void setPosSelected(int[] posSelected) {
-		this.posSelected = posSelected;
-		repaint();
-	}
-
-	public List<ChessPosition> getPosCanMove() {
-		return posCanMove;
-	}
-
-	public void setPosCanMove(List<ChessPosition> posCanMove) {
-		this.posCanMove = posCanMove;
-		repaint();
 	}
 
 }
