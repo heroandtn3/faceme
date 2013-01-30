@@ -21,7 +21,7 @@ package model;
  * @author heroandtn3
  * @date Jan 7, 2013
  */
-public enum Player {
+public enum Side {
 	RED, 
 	BLACK
 }
