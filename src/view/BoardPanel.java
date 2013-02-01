@@ -101,7 +101,10 @@ public class BoardPanel extends CardPanel implements MouseListener {
 
 		drawBoard(g);
 		drawChess(g);
-		drawSelected(g);
+		ChessPosition oldPos = match.getOldPos();
+		drawPos(g, oldPos);
+		ChessPosition newPos = match.getNewPos();
+		drawPos(g, newPos);
 		drawPosCanMove(g);
 	}
 
@@ -124,9 +127,9 @@ public class BoardPanel extends CardPanel implements MouseListener {
 				if (value != 0) { // kiem tra xem co quan co khong
 					// neu co thi tien hanh ve
 					Image img = match.getChess()[Math.abs(value)]
-							.getShape(value); // lay hinh anh cua ban co de ve
+							.getShape(value); // lay hinh anh cua quan co de ve
 					if (img != null) {
-						int[] pos = convertToXY(row, col); // convert row, col 
+						int[] pos = convertToXY(new ChessPosition(row, col));
 														// sang x, y de ve
 						g.drawImage(img, pos[0] - 21, pos[1] - 21, null);
 					}
@@ -135,13 +138,13 @@ public class BoardPanel extends CardPanel implements MouseListener {
 		}
 	}
 	
-	private void drawSelected(Graphics g) {
-		int[] posSelected = match.getPosSelected();
-		if (posSelected != null) {
-			int[] pos = convertToXY(posSelected[0], posSelected[1]);
-			g.drawImage(imgSelect, pos[0] - 21, pos[1] - 21, 42, 42, null);
+	private void drawPos(Graphics g, ChessPosition pos) {
+		if (pos != null) {
+			int[] posXY = convertToXY(pos);
+			g.drawImage(imgSelect, posXY[0] - 21, posXY[1] - 21, 42, 42, null);
 		}
 	}
+	
 	
 	private void drawPosCanMove(Graphics g) {
 		List<ChessPosition> posCanMove = match.getPosCanMove();
@@ -150,7 +153,7 @@ public class BoardPanel extends CardPanel implements MouseListener {
 		if (posCanMove == null) return;
 		
 		for (ChessPosition posCM : posCanMove) {
-			int[] pos = convertToXY(posCM.getRow(), posCM.getCol());
+			int[] pos = convertToXY(posCM);
 			if (posCM.isKillable()) {
 				g.drawImage(imgCanKill, pos[0] - 15, pos[1] - 15, null);
 			} else {
@@ -162,33 +165,31 @@ public class BoardPanel extends CardPanel implements MouseListener {
 	/*some utilities---------------------------------------------------------*/
 
 	/**
-	 * Chuyen toa do ban co row, col sang toa do x, y
+	 * Chuyen ChessPosition sang toa do x, y
 	 * @param row
 	 * @param col
 	 * @return: mang 1 chieu chua 2 phan tu: 
 	 * [0]: x
 	 * [1]: y 
 	 */
-	private int[] convertToXY(int row, int col) {
-		int x = 30 + col * 53;
-		int y = 25 + row * 50;
+	private int[] convertToXY(ChessPosition pos) {
+		int x = 30 + pos.getCol() * 53;
+		int y = 25 + pos.getRow() * 50;
 		return (new int[] { x, y });
 	}
 	
 	/**
-	 * Ham convert tu x, y sang row, col
+	 * Ham convert tu x, y sang ChessPosition
 	 * @param x
 	 * @param y
-	 * @return: Neu x, y hop le thi tra ve mang int:
-	 * [0]: row
-	 * [1]: col
+	 * @return: Neu x, y hop le thi tra ve 1 ChessPosition
 	 * 			Neu khong thi tra ve: null
 	 */
-	private int[] convertToRowCol(int x, int y) {
+	private ChessPosition convertToChessPos(int x, int y) {
 		int row = (y - 25 + 21) / 50;
 		int col = (x - 30 + 21) / 53;
 		if (row >= 0 && row < 10 && col >= 0 && col < 9) {
-			return (new int[] {row, col});
+			return (new ChessPosition(row, col));
 		} else {
 			return null;
 		}
@@ -205,14 +206,13 @@ public class BoardPanel extends CardPanel implements MouseListener {
 	public void mousePressed(MouseEvent e) {
 		int x = e.getX();
 		int y = e.getY();
-		int[] pos = convertToRowCol(x, y);
+		ChessPosition pos = convertToChessPos(x, y);
 		
 		// kiem tra tinh hop le
 		// loai bo neu la null
 		if (pos == null) return; 
 		
-		System.out.println(pos[0] + " - " + pos[1]);
-		match.setPosSelected(pos);
+		match.setPos(pos);
 	}
 
 	@Override

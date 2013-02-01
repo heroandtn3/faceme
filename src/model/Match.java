@@ -62,7 +62,8 @@ public class Match extends Observable {
 	
 	// game state attribues
 	private List<ChessPosition> posCanMove;
-	private int[] posSelected;
+	// vi tri cu va moi, dung de luu vet, undo,redo,...
+	private ChessPosition oldPos, newPos; 
 
 	/**
 	 * 
@@ -70,7 +71,7 @@ public class Match extends Observable {
 	public Match() {
 		board = new Board(table);
 		initChess();
-		posSelected = null;
+		oldPos = newPos = null;
 		posCanMove = new ArrayList<ChessPosition>();
 		state = GameState.PLAYING;
 		currentSide = Side.BLACK;
@@ -99,11 +100,10 @@ public class Match extends Observable {
 	public void move(ChessPosition oldPos, ChessPosition newPos) {
 		int[][] mt = board.getTable();
 		
+		// thay gia tri newPos bang gia tri o oldPos
 		int tmp = mt[oldPos.getRow()][oldPos.getCol()];
 		mt[oldPos.getRow()][oldPos.getCol()] = 0; // vi tri cu chuyen ve 0
 		mt[newPos.getRow()][newPos.getCol()] = tmp;
-		// xoa vet
-		this.posSelected = null;
 		
 		// clear posCanMove
 		this.posCanMove.clear();
@@ -118,12 +118,14 @@ public class Match extends Observable {
 	}
 	
 	private void updatePosCanMove() {
-		if (posSelected == null) {
+		if (oldPos == null) {
 			posCanMove.clear();
 		} else {
-			int value = Math.abs(table[posSelected[0]][posSelected[1]]);
+			int row = oldPos.getRow();
+			int col = oldPos.getCol();
+			int value = Math.abs(table[row][col]);
 			ChessPosition currentPos = 
-					new ChessPosition(posSelected[0], posSelected[1]);
+					new ChessPosition(row, col);
 			posCanMove = chess[value].getPosCanMove(currentPos);
 		}
 		// thong bao cho view update
@@ -131,14 +133,53 @@ public class Match extends Observable {
 		notifyObservers();
 	}
 	
-	private boolean isChooseForMove(int[] pos) {
-		int value = table[pos[0]][pos[1]];
+	private boolean isChooseForMove(ChessPosition pos) {
+		int value = table[pos.getRow()][pos.getCol()];
 		if ((currentSide == Side.RED && value > 0) ||
 			(currentSide == Side.BLACK && value < 0)) {
 			return true;
 		} else {
 			return false;
 		}
+	}
+	
+	public void setPos(ChessPosition pos) {
+		if (isChooseForMove(pos)) { // chon quan de di chuyen
+			// loai bo pos khong hop le
+			if (table[pos.getRow()][pos.getCol()] == 0) return;
+			
+			oldPos = pos; // neu hop le thi danh dau oldPos da chon
+			newPos = null; // va bo danh dau newPos
+			
+			// update pos can move
+			updatePosCanMove();
+		} else if (oldPos != null){ // neu da co pos duoc chon
+			// thi di chuyen quan den vi tri moi
+			
+			// vi tri di chuyen den phai nam trong posCanMove
+			boolean validPos = false;
+			for (ChessPosition posCM : posCanMove) {
+				if (posCM.getRow() == pos.getRow() &&
+					posCM.getCol() == pos.getCol()) {
+					validPos = true;
+					break;
+				}
+			}
+			if (validPos == false) return;
+		
+			// vi tri hop le thi tien hanh di chuyens
+			newPos = pos;
+			this.move(oldPos, newPos);
+			
+			// may tinh di chuyen
+			if (currentSide == Side.RED) {
+				ChessPosition[] move = computer.getBestMove(level);
+				oldPos = move[0];
+				newPos = move[1];
+				this.move(oldPos, newPos);
+			}
+		}
+		
 	}
 
 	/* get, set -------------------------------------------------------------*/
@@ -178,53 +219,11 @@ public class Match extends Observable {
 		return posCanMove;
 	}
 
-	public void setPosCanMove(List<ChessPosition> posCanMove) {
-		this.posCanMove = posCanMove;
+	public ChessPosition getOldPos() {
+		return oldPos;
 	}
 
-	public int[] getPosSelected() {
-		return posSelected;
+	public ChessPosition getNewPos() {
+		return newPos;
 	}
-
-	public void setPosSelected(int[] pos) {
-		if (isChooseForMove(pos)) { // chon quan de di chuyen
-			// loai bo pos khong hop le
-			if (table[pos[0]][pos[1]] == 0) return;
-			
-			// neu hop le thi danh dau pos da chon
-			this.posSelected = pos;
-			
-			// update pos can move
-			updatePosCanMove();
-		} else if (this.posSelected != null){ // neu da co pos duoc chon
-			// thi di chuyen quan den vi tri moi
-			
-			// vi tri di chuyen den phai nam trong posCanMove
-			boolean validPos = false;
-			for (ChessPosition posCM : posCanMove) {
-				if (posCM.getRow() == pos[0] &&
-					posCM.getCol() == pos[1]) {
-					validPos = true;
-					break;
-				}
-			}
-			if (validPos == false) return;
-		
-			// vi tri hop le thi tien hanh di chuyens
-			ChessPosition oldPos = 
-					new ChessPosition(posSelected[0], posSelected[1]);
-			ChessPosition newPos = new ChessPosition(pos[0], pos[1]);
-			
-			// di chuyen
-			this.move(oldPos, newPos);
-			
-			// may tinh di chuyen
-			if (currentSide == Side.RED) {
-				ChessPosition[] move = computer.getBestMove(level);
-				this.move(move[0], move[1]);
-			}
-		}
-		
-	}
-
 }
