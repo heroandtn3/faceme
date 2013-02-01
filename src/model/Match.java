@@ -46,6 +46,7 @@ public class Match extends Observable {
 	private Board board;
 	private Chess[] chess;
 	private Computer computer;
+	private final boolean playWithCom = true; // co dinh
 	
 	private int[][] table = {
 			{6,  4,  3,  2,  7,  2,  3,  4,  6},
@@ -75,7 +76,7 @@ public class Match extends Observable {
 		posCanMove = new ArrayList<ChessPosition>();
 		state = GameState.PLAYING;
 		currentSide = Side.BLACK;
-		computer = new ComputerMinmax(this, Side.RED);
+		initComputer();
 	}
 	
 	private void initChess() {
@@ -90,6 +91,13 @@ public class Match extends Observable {
 		chess[7] = new King(board);
 		
 		
+	}
+	
+	private void initComputer() {
+		if (playWithCom) {
+			computer = new ComputerMinmax(this,
+					(currentSide == Side.BLACK) ? Side.RED : Side.BLACK);
+		}
 	}
 	
 	/**
@@ -172,7 +180,7 @@ public class Match extends Observable {
 			this.move(oldPos, newPos);
 			
 			// may tinh di chuyen
-			if (currentSide == Side.RED) {
+			if (playWithCom) {
 				ChessPosition[] move = computer.getBestMove(level);
 				oldPos = move[0];
 				newPos = move[1];
