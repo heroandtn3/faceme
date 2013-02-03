@@ -59,13 +59,12 @@ public class ComputerMinmax implements Computer {
 	
 	private int minmax(int depth, Side side) {
 		int currentScore;
-		int bestScore = (side == mySide) ? 
-				Integer.MIN_VALUE : Integer.MAX_VALUE;
+		int bestScore = Integer.MIN_VALUE;
 		
 		List<ChessPosition[]> nextMoves = moveGenerator.getMoves(side);
 		
 		// check
-		if (nextMoves.isEmpty() || depth <= 0) { 
+		if (depth <= 0 || nextMoves.isEmpty()) { 
 			// dat toi do sau hoac het nuoc di
 			bestScore = evaluator.evaluate(match.getBoard());
 		} else {
@@ -82,24 +81,13 @@ public class ComputerMinmax implements Computer {
 				match.getBoard().getTable()[row1][col1] = 0;
 				match.getBoard().getTable()[row2][col2] = oldValue;
 				
-				if (side == mySide) {
-					//find max
-					currentScore = minmax(depth - 1, oppSide);
-					if (currentScore > bestScore) {
-						bestScore = currentScore;
-						ChessPosition oldPos = new ChessPosition(row1, col1);
-						ChessPosition newPos = new ChessPosition(row2, col2);
-						bestMove = new ChessPosition[] {oldPos, newPos};
-					}
-				} else {
-					// find min
-					currentScore = minmax(depth - 1, mySide);
-					if (currentScore < bestScore) {
-						bestScore = currentScore;
-						ChessPosition oldPos = new ChessPosition(row1, col1);
-						ChessPosition newPos = new ChessPosition(row2, col2);
-						bestMove = new ChessPosition[] {oldPos, newPos};
-					}
+
+				currentScore = -minmax(depth - 1, oppSide);
+				if (currentScore > bestScore) {
+					bestScore = currentScore;
+					ChessPosition oldPos = new ChessPosition(row1, col1);
+					ChessPosition newPos = new ChessPosition(row2, col2);
+					bestMove = new ChessPosition[] {oldPos, newPos};
 				}
 				// undo move
 				match.getBoard().getTable()[row1][col1] = oldValue;
