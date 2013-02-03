@@ -64,7 +64,7 @@ public class Match extends Observable {
 	// game state attribues
 	private List<ChessPosition> posCanMove;
 	// vi tri cu va moi, dung de luu vet, undo,redo,...
-	private ChessPosition oldPos, newPos; 
+	private ChessPosition oldPos, newPos;
 
 	/**
 	 * 
@@ -181,13 +181,28 @@ public class Match extends Observable {
 			
 			// may tinh di chuyen
 			if (playWithCom) {
-				ChessPosition[] move = computer.getBestMove(level);
-				oldPos = move[0];
-				newPos = move[1];
-				this.move(oldPos, newPos);
+				// ai thread
+				new Thread(new AIRun()).start();
 			}
 		}
 		
+	}
+	
+	/*ai code--------------------------------------------------------------*/
+	class AIRun implements Runnable {
+		@Override
+		public void run() {
+			try {
+				Thread.sleep(3000); // doi 3 giay de test
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			ChessPosition[] move = computer.getBestMove(level);
+			oldPos = move[0];
+			newPos = move[1];
+			
+			move(oldPos, newPos);
+		}
 	}
 
 	/* get, set -------------------------------------------------------------*/
