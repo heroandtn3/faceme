@@ -21,9 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
-import control.Computer;
-import control.ComputerMinmax;
-
 import model.chess.Advisor;
 import model.chess.Bishop;
 import model.chess.Cannon;
@@ -32,6 +29,8 @@ import model.chess.King;
 import model.chess.Knight;
 import model.chess.Pawn;
 import model.chess.Rook;
+import control.Computer;
+import control.ComputerMinmax;
 
 /**
  * @author heroandtn3
@@ -64,7 +63,10 @@ public class Match extends Observable {
 	// game state attribues
 	private List<ChessPosition> posCanMove;
 	// vi tri cu va moi, dung de luu vet, undo,redo,...
-	private ChessPosition oldPos, newPos; 
+	private ChessPosition oldPos, newPos;
+	
+	// place AI computer in separate Thread 
+	private Thread aiThread;
 
 	/**
 	 * 
@@ -97,6 +99,8 @@ public class Match extends Observable {
 		if (playWithCom) {
 			computer = new ComputerMinmax(this,
 					(currentSide == Side.BLACK) ? Side.RED : Side.BLACK);
+			aiThread = new Thread(new AIRun());
+			aiThread.start(); // start AI thread
 		}
 	}
 	
@@ -181,13 +185,36 @@ public class Match extends Observable {
 			
 			// may tinh di chuyen
 			if (playWithCom) {
-				ChessPosition[] move = computer.getBestMove(level);
-				oldPos = move[0];
-				newPos = move[1];
-				this.move(oldPos, newPos);
+				// ai thread
+				synchronized (computer) {
+					computer.notify();
+				}
 			}
 		}
 		
+	}
+	
+	/*ai code--------------------------------------------------------------*/
+	class AIRun implements Runnable {
+		private volatile boolean stopped = false;
+		@Override
+		public void run() {
+			while (!stopped) {
+				synchronized (computer) {
+					try {
+						computer.wait(); // wait until computer.notify 
+						System.out.println("thinking...");
+					} catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
+						return;
+					}
+				}
+				ChessPosition[] move = computer.getBestMove(level);
+				oldPos = move[0];
+				newPos = move[1];
+				move(oldPos, newPos);
+			}
+		}
 	}
 
 	/* get, set -------------------------------------------------------------*/
