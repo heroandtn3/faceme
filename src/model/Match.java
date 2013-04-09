@@ -29,6 +29,8 @@ import model.chess.King;
 import model.chess.Knight;
 import model.chess.Pawn;
 import model.chess.Rook;
+import control.CheckFinishMatch;
+import control.CheckerFinish;
 import control.Computer;
 import control.ComputerMinmax;
 
@@ -45,6 +47,9 @@ public class Match extends Observable {
 	private Board board;
 	private Chess[] chess;
 	private Computer computer;
+	private CheckerFinish checkerFinish = new CheckFinishMatch();
+	
+	private boolean checkmate = false; // chieu tuong
 	private final boolean playWithCom = true; // co dinh
 	
 	private int[][] table = {
@@ -104,31 +109,85 @@ public class Match extends Observable {
 		}
 	}
 	
-	/**
-	 * Ham thuc hien di chuyen quan co tu vi tri cu sang vi tri moi
-	 * @param oldPos
-	 * @param newPos
-	 */
-	public void move(ChessPosition oldPos, ChessPosition newPos) {
-		int[][] mt = board.getTable();
+	/* For update game status -----------------------------------------------*/
+	
+	private void updateGameState() {
+		// kiem tra chieu tuong
+		checkmate = CheckingMate();
+		if (checkmate) {
+			System.out.println("Chieu tuong");
+		}
 		
-		// thay gia tri newPos bang gia tri o oldPos
-		int tmp = mt[oldPos.getRow()][oldPos.getCol()];
-		mt[oldPos.getRow()][oldPos.getCol()] = 0; // vi tri cu chuyen ve 0
-		mt[newPos.getRow()][newPos.getCol()] = tmp;
-		
-		// clear posCanMove
-		this.posCanMove.clear();
-		
-		// switch player
-		currentSide = (currentSide == Side.BLACK) ?
-				Side.RED : Side.BLACK;
-		
-		// danh dau la da thay doi va gui yeu cau update den cac observers
-		setChanged();
-		notifyObservers();
+		// kiem tra het co
+		state = checkerFinish.getState(this);
+		if (state == null) {
+			System.out.println("`state` is null");
+			return;
+		}
+		switch (state) {
+			case NONE:
+				System.out.println("Game is not stated yet!");
+				break;
+			case PLAYING:
+				System.out.println(currentSide + " is thinkink...");
+				break;
+			case DRAW:
+				System.out.println("Game draw!");
+				break;
+			case BLACK_WON:
+				System.out.println("Black won!");
+				break;
+			case RED_WON:
+				System.out.println("Red won!");
+				break;
+			default:
+				System.out.println("`state` is unexpected result!");
+				break;
+				
+		}
 	}
 	
+	/**
+	 * Kiem tra chieu tuong
+	 * @return true neu `currentPlayer` dang bi chieu tuong
+	 */
+	private boolean CheckingMate() {
+		int tuong;
+		Side oppSide;
+		if (currentSide == Side.BLACK) {
+			tuong = -7;
+			oppSide = Side.RED;
+		} else {
+			tuong = 7;
+			oppSide = Side.BLACK;
+		}
+		
+		for (int row = 0; row < 10; row++) {
+			for (int col = 0; col < 9; col++) {
+				int value = table[row][col];
+				if (isChessOf(oppSide, value)) {
+					ChessPosition current = new ChessPosition(row, col);
+					for (ChessPosition pos : 
+						chess[Math.abs(value)].getPosCanMove(current)) {
+						if (table[pos.getRow()][pos.getCol()] == tuong) {
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	private boolean isChessOf(Side player, int value) {
+		if ((player == Side.RED && value > 0) ||
+			player == Side.BLACK && value < 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	private void updatePosCanMove() {
 		if (oldPos == null) {
 			posCanMove.clear();
@@ -145,13 +204,34 @@ public class Match extends Observable {
 		notifyObservers();
 	}
 	
-	private boolean isChooseForMove(ChessPosition pos) {
-		int value = table[pos.getRow()][pos.getCol()];
-		if ((currentSide == Side.RED && value > 0) ||
-			(currentSide == Side.BLACK && value < 0)) {
-			return true;
-		} else {
-			return false;
+	/* For moving chess------------------------------------------------------*/
+	
+	/**
+	 * Ham thuc hien di chuyen quan co tu vi tri cu sang vi tri moi
+	 * @param oldPos
+	 * @param newPos
+	 */
+	public void move(ChessPosition oldPos, ChessPosition newPos) {
+		if (state == GameState.PLAYING) {
+			int[][] mt = board.getTable();
+			
+			// thay gia tri newPos bang gia tri o oldPos
+			int tmp = mt[oldPos.getRow()][oldPos.getCol()];
+			mt[oldPos.getRow()][oldPos.getCol()] = 0; // vi tri cu chuyen ve 0
+			mt[newPos.getRow()][newPos.getCol()] = tmp;
+			
+			// clear posCanMove
+			this.posCanMove.clear();
+			
+			// switch player
+			currentSide = (currentSide == Side.BLACK) ?
+					Side.RED : Side.BLACK;
+			
+			updateGameState();
+			
+			// danh dau la da thay doi va gui yeu cau update den cac observers
+			setChanged();
+			notifyObservers();
 		}
 	}
 	
@@ -194,6 +274,16 @@ public class Match extends Observable {
 		
 	}
 	
+	private boolean isChooseForMove(ChessPosition pos) {
+		int value = table[pos.getRow()][pos.getCol()];
+		if ((currentSide == Side.RED && value > 0) ||
+			(currentSide == Side.BLACK && value < 0)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	/*ai code--------------------------------------------------------------*/
 	class AIRun implements Runnable {
 		private volatile boolean stopped = false;
@@ -208,9 +298,10 @@ public class Match extends Observable {
 						return;
 					}
 				}
-				ChessPosition[] move = computer.getBestMove(level);
-				oldPos = move[0];
-				newPos = move[1];
+
+				ChessPosition[] comMove = computer.getBestMove(level);
+				oldPos = comMove[0];
+				newPos = comMove[1];
 				move(oldPos, newPos);
 			}
 		}
@@ -259,5 +350,13 @@ public class Match extends Observable {
 
 	public ChessPosition getNewPos() {
 		return newPos;
+	}
+
+	public Side getCurrentSide() {
+		return currentSide;
+	}
+
+	public boolean isCheckmate() {
+		return checkmate;
 	}
 }

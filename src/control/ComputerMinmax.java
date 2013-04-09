@@ -45,7 +45,8 @@ public class ComputerMinmax implements Computer {
 	@Override
 	public ChessPosition[] getBestMove(Level level) {
 		List<ChessPosition[]> allMoves = moveGenerator.getMoves(side);
-		int x = (int) (Math.random() * allMoves.size());  
+		int x = (int) (Math.random() * allMoves.size()); 
+		// TODO: het co, khong co nuoc di thi se bao loi
 		return moveGenerator.getMoves(side).get(x);
 	}
 
