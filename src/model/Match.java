@@ -33,6 +33,8 @@ import control.CheckFinishMatch;
 import control.CheckerFinish;
 import control.Computer;
 import control.ComputerMinmax;
+import control.MoveGenerator;
+import control.MoveGeneratorNormal;
 
 /**
  * @author heroandtn3
@@ -48,6 +50,7 @@ public class Match extends Observable {
 	private Chess[] chess;
 	private Computer computer;
 	private CheckerFinish checkerFinish = new CheckFinishMatch();
+	private MoveGenerator generator = new MoveGeneratorNormal(this);
 	
 	private boolean checkmate = false; // chieu tuong
 	private final boolean playWithCom = true; // co dinh
@@ -162,30 +165,14 @@ public class Match extends Observable {
 			oppSide = Side.BLACK;
 		}
 		
-		for (int row = 0; row < 10; row++) {
-			for (int col = 0; col < 9; col++) {
-				int value = table[row][col];
-				if (isChessOf(oppSide, value)) {
-					ChessPosition current = new ChessPosition(row, col);
-					for (ChessPosition pos : 
-						chess[Math.abs(value)].getPosCanMove(current)) {
-						if (table[pos.getRow()][pos.getCol()] == tuong) {
-							return true;
-						}
-					}
-				}
+		List<ChessPosition[]> allMoves = generator.getMoves(oppSide);
+		for (ChessPosition[] pos : allMoves) {
+			if (table[pos[1].getRow()][pos[1].getCol()] == tuong) {
+				return true;
 			}
 		}
+
 		return false;
-	}
-	
-	private boolean isChessOf(Side player, int value) {
-		if ((player == Side.RED && value > 0) ||
-			player == Side.BLACK && value < 0) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 	private void updatePosCanMove() {
