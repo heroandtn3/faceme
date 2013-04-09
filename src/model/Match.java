@@ -209,9 +209,13 @@ public class Match extends Observable {
 					}
 				}
 				ChessPosition[] move = computer.getBestMove(level);
-				oldPos = move[0];
-				newPos = move[1];
-				move(oldPos, newPos);
+				if (move != null) {
+					oldPos = move[0];
+					newPos = move[1];
+					move(oldPos, newPos);
+				} else {
+					state = GameState.BLACK_WON;
+				}
 			}
 		}
 	}
