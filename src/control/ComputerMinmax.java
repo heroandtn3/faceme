@@ -36,11 +36,20 @@ public class ComputerMinmax implements Computer {
 	private MoveGenerator moveGenerator;
 	private Evaluator evaluator;
 	private ChessPosition[] bestMove;
+	private int[][] table;
 	/**
 	 * 
 	 */
 	public ComputerMinmax(Match match, Side side) {
 		this.match = match;
+		table = new int[10][9];
+		// copy table contents
+		this.table = new int[10][9];
+		for (int row = 0; row < 10; row++) {
+			for (int col = 0; col < 9; col++) {
+				this.table[row][col] = match.getBoard().getTable()[row][col];
+			}
+		}
 		mySide = side;
 		oppSide = (mySide == Side.BLACK) ? Side.RED : Side.BLACK;
 		this.bestMove = null;
@@ -76,11 +85,11 @@ public class ComputerMinmax implements Computer {
 				int row2 = pos[1].getRow();
 				int col2 = pos[1].getCol();
 				// backup
-				int oldValue = match.getBoard().getTable()[row1][col1];
-				int newValue = match.getBoard().getTable()[row2][col2];
+				int oldValue = table[row1][col1];
+				int newValue = table[row2][col2];
 				// move
-				match.getBoard().getTable()[row1][col1] = 0;
-				match.getBoard().getTable()[row2][col2] = oldValue;
+				table[row1][col1] = 0;
+				table[row2][col2] = oldValue;
 				
 				if (side == mySide) {
 					//find max
@@ -102,8 +111,8 @@ public class ComputerMinmax implements Computer {
 					}
 				}
 				// undo move
-				match.getBoard().getTable()[row1][col1] = oldValue;
-				match.getBoard().getTable()[row2][col2] = newValue;
+				table[row1][col1] = oldValue;
+				table[row2][col2] = newValue;
 			}
 		}
 		return bestScore;

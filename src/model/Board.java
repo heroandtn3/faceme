@@ -29,11 +29,25 @@ public class Board {
 	 * 
 	 */
 	public Board() {
-		table = new int[9][10];
+		table = new int[10][9];
 	}
 	
 	public Board(int[][] table) {
 		this.table = table;
+	}
+	
+	/**
+	 * Clone a board from `oriBoard`
+	 * @param oriBoard
+	 */
+	public Board(Board oriBoard) {
+		// copy table contents
+		this.table = new int[10][9];
+		for (int row = 0; row < 10; row++) {
+			for (int col = 0; col < 9; col++) {
+				this.table[row][col] = oriBoard.getTable()[row][col];
+			}
+		}
 	}
 
 	public int[][] getTable() {
