@@ -36,6 +36,7 @@ import control.ComputerMinmax;
 import control.MoveGenerator;
 import control.MoveGeneratorNormal;
 
+
 /**
  * @author heroandtn3
  * @date Jan 7, 2013
@@ -146,7 +147,7 @@ public class Match extends Observable {
 			default:
 				System.out.println("`state` is unexpected result!");
 				break;
-				
+
 		}
 	}
 	
@@ -285,6 +286,7 @@ public class Match extends Observable {
 						return;
 					}
 				}
+
 				ChessPosition[] comMove = computer.getBestMove(level);
 				if (comMove != null) {
 					oldPos = comMove[0];
