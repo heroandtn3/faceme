@@ -298,11 +298,14 @@ public class Match extends Observable {
 						return;
 					}
 				}
-
 				ChessPosition[] comMove = computer.getBestMove(level);
-				oldPos = comMove[0];
-				newPos = comMove[1];
-				move(oldPos, newPos);
+				if (comMove != null) {
+					oldPos = comMove[0];
+					newPos = comMove[1];
+					move(oldPos, newPos);
+				} else {
+					state = GameState.BLACK_WON;
+				}
 			}
 		}
 	}
