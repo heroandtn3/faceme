@@ -1,6 +1,5 @@
 ## TODO
-* Kiem tra chieu tuong
-* Kiem tra het co
-* Danh dau la dang den luot ben nao choi
-* Cho phep sap xep quan co de tao van co
-* Cho phep choi co the
+* Kiểm tra hết cờ
+* Kiểm tra chiếu tướng
+* Đánh dấu là đang đến lượt bên nào chơi
+* Cho phép chơi cờ thế
