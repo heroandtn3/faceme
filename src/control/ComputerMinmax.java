@@ -42,7 +42,7 @@ public class ComputerMinmax implements Computer {
 	 */
 	public ComputerMinmax(Match match, Side side) {
 		this.match = match;
-		table = new int[10][9];
+		// TODO: this make moveGnerator and evaluator dont work right
 		// copy table contents
 		this.table = new int[10][9];
 		for (int row = 0; row < 10; row++) {
