@@ -24,16 +24,20 @@ package model;
 public class Board {
 
 	private int[][] table;
+	private int[][] cloneTable;
 
 	/**
 	 * 
 	 */
 	public Board() {
 		table = new int[10][9];
+		cloneTable = new int[10][9];
 	}
 	
 	public Board(int[][] table) {
 		this.table = table;
+		cloneTable = new int[10][9];
+		makeCloneTable();
 	}
 	
 	/**
@@ -48,6 +52,16 @@ public class Board {
 				this.table[row][col] = oriBoard.getTable()[row][col];
 			}
 		}
+		cloneTable = new int[10][9];
+		makeCloneTable();
+	}
+	
+	public void makeCloneTable() {
+		for (int row = 0; row < 10; row++) {
+			for (int col = 0; col < 9; col++) {
+				cloneTable[row][col] = table[row][col];
+			}
+		}
 	}
 
 	public int[][] getTable() {
@@ -56,5 +70,9 @@ public class Board {
 
 	public void setTable(int[][] table) {
 		this.table = table;
+	}
+
+	public int[][] getCloneTable() {
+		return cloneTable;
 	}
 }

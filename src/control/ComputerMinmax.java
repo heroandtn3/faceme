@@ -42,14 +42,15 @@ public class ComputerMinmax implements Computer {
 	 */
 	public ComputerMinmax(Match match, Side side) {
 		this.match = match;
+		
 		// TODO: this make moveGnerator and evaluator dont work right
 		// copy table contents
-		this.table = new int[10][9];
+		/*this.table = new int[10][9];
 		for (int row = 0; row < 10; row++) {
 			for (int col = 0; col < 9; col++) {
 				this.table[row][col] = match.getBoard().getTable()[row][col];
 			}
-		}
+		}*/
 		mySide = side;
 		oppSide = (mySide == Side.BLACK) ? Side.RED : Side.BLACK;
 		this.bestMove = null;
@@ -62,6 +63,8 @@ public class ComputerMinmax implements Computer {
 		/*List<ChessPosition[]> allMoves = moveGenerator.getMoves(side);
 		int x = (int) (Math.random() * allMoves.size());  
 		return moveGenerator.getMoves(side).get(x);*/
+		match.getBoard().makeCloneTable();
+		this.table = match.getBoard().getCloneTable();
 		minmax(3, mySide);
 		return bestMove;
 	}

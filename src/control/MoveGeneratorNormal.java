@@ -44,7 +44,7 @@ public class MoveGeneratorNormal extends MoveGenerator {
 		List<ChessPosition[]> allMoves = new ArrayList<ChessPosition[]>();
 
 		List<ChessPosition> posCanMove;
-		int[][] table = match.getBoard().getTable();
+		int[][] table = match.getBoard().getCloneTable();
 		
 		for (int row = 0; row < 10; row++) {
 			for (int col = 0; col < 9; col++) {
