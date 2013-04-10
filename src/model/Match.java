@@ -119,7 +119,7 @@ public class Match extends Observable {
 		// kiem tra chieu tuong
 		checkmate = CheckingMate();
 		if (checkmate) {
-			System.out.println("Chieu tuong");
+			System.out.println("Chieu tuong!!!");
 		}
 		
 		// kiem tra het co
@@ -133,7 +133,9 @@ public class Match extends Observable {
 				System.out.println("Game is not stated yet!");
 				break;
 			case PLAYING:
-				System.out.println(currentSide + " is thinkink...");
+				Side oppSide = (currentSide == Side.BLACK) ?
+						Side.RED : Side.BLACK;
+				System.out.println(oppSide + " is thinkink...");
 				break;
 			case DRAW:
 				System.out.println("Game draw!");
@@ -153,22 +155,19 @@ public class Match extends Observable {
 	
 	/**
 	 * Kiem tra chieu tuong
-	 * @return true neu `currentPlayer` dang bi chieu tuong
+	 * @return true neu `currentPlayer` dang chieu tuong doi phuong
 	 */
-	private boolean CheckingMate() {
-		int tuong;
-		Side oppSide;
+	public boolean CheckingMate() {
+		int tuongOpp;
 		if (currentSide == Side.BLACK) {
-			tuong = -7;
-			oppSide = Side.RED;
+			tuongOpp = 7;
 		} else {
-			tuong = 7;
-			oppSide = Side.BLACK;
+			tuongOpp = -7;
 		}
 		
-		List<ChessPosition[]> allMoves = generator.getMoves(oppSide);
+		List<ChessPosition[]> allMoves = generator.getMoves(currentSide);
 		for (ChessPosition[] pos : allMoves) {
-			if (table[pos[1].getRow()][pos[1].getCol()] == tuong) {
+			if (table[pos[1].getRow()][pos[1].getCol()] == tuongOpp) {
 				return true;
 			}
 		}
@@ -211,11 +210,11 @@ public class Match extends Observable {
 			// clear posCanMove
 			this.posCanMove.clear();
 			
+			updateGameState();
+			
 			// switch player
 			currentSide = (currentSide == Side.BLACK) ?
 					Side.RED : Side.BLACK;
-			
-			updateGameState();
 			
 			// danh dau la da thay doi va gui yeu cau update den cac observers
 			setChanged();
