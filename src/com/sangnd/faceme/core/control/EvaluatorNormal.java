@@ -17,31 +17,31 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package control;
+package com.sangnd.faceme.core.control;
 
-import java.util.List;
-
-import model.Board;
-import model.ChessPosition;
-import model.Side;
-
-
-
+import com.sangnd.faceme.core.model.Board;
 
 /**
  * @author heroandtn3
- * @date Jan 30, 2013
+ * @date Feb 1, 2013
  */
-public interface MoveGenerator {
+public class EvaluatorNormal implements Evaluator {
 
 	/**
-	 * Ham liet ke tat ca cac nuoc di co the
-	 * @param side quan do (Side.FRIEND) hoac quan den (Side.ENERMY)
-	 * @return danh sach lien ket chua cac phan tu la mang ChessPosition[] co
-	 * 2 phan tu chua thong tin buoc di chuyen, trong do:
-	 * [0]: vi tri dau
-	 * [1]: vi tri cuoi
+	 * 
 	 */
-	public abstract List<ChessPosition[]> getMoves(Board board, Side side);
+	public EvaluatorNormal() {
+	}
 
+	@Override
+	public int evaluate(Board board) {
+		int[][] table = board.getTable();
+		int value = 0;
+		for (int row = 0; row < 10; row++) {
+			for (int col = 0; col < 9; col++) {
+				value += table[row][col];
+			}
+		}
+		return value;
+	}
 }

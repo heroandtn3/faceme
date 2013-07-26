@@ -24,11 +24,11 @@ import java.util.List;
 
 import javax.swing.JButton;
 
-import model.Board;
-import model.ChessPosition;
-import model.GameState;
 
 import com.sangnd.faceme.activities.play.PlayView;
+import com.sangnd.faceme.core.model.Board;
+import com.sangnd.faceme.core.model.ChessPosition;
+import com.sangnd.faceme.core.model.GameState;
 import com.sangnd.faceme.event.HasSelectChessListener;
 
 /**

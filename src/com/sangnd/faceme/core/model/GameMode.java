@@ -19,7 +19,7 @@
 /**
  * 
  */
-package model;
+package com.sangnd.faceme.core.model;
 
 /**
  * @author heroandtn3

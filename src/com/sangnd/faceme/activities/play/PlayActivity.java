@@ -19,10 +19,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.sangnd.faceme.activities.play;
 
-import model.ChessPosition;
-import model.Match;
 
 import com.sangnd.faceme.activities.ClientFactory;
+import com.sangnd.faceme.core.model.ChessPosition;
+import com.sangnd.faceme.core.model.Match;
 import com.sangnd.faceme.event.SelectChessEvent;
 import com.sangnd.faceme.event.SelectChessListener;
 import com.sangnd.mvp.activityplace.AcceptOnePanel;

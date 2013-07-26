@@ -23,10 +23,10 @@ import java.util.List;
 
 import javax.swing.JButton;
 
-import model.Board;
-import model.ChessPosition;
-import model.GameState;
 
+import com.sangnd.faceme.core.model.Board;
+import com.sangnd.faceme.core.model.ChessPosition;
+import com.sangnd.faceme.core.model.GameState;
 import com.sangnd.faceme.event.HasSelectChessListener;
 import com.sangnd.mvp.activityplace.View;
 

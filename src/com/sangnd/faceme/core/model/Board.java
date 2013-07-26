@@ -15,27 +15,42 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package control;
-
-import model.ChessPosition;
-import model.Level;
-import model.Side;
+package com.sangnd.faceme.core.model;
 
 /**
  * @author heroandtn3
  * @date Jan 7, 2013
  */
-public interface Computer {
+public interface Board {
+
+
+
 	/**
 	 * 
-	 * @param level do kho
-	 * @return mang 2 phan tu ChessPosition:
-	 * [0]: oldPos
-	 * [1]: newPos
 	 */
-	public ChessPosition[] getBestMove(Level level);
 	
-	public Side getSide();
+	public void move(ChessPosition oldPos, ChessPosition newPos);
 	
-	public void move();
+	/**
+	 * Undo nhung nuoc da di
+	 * @param times so luot di quan can undo
+	 * @param soft true khi undo chi la quay lai tam thoi va khong anh
+	 * huong den trang thai ban co
+	 */
+	public void undo(int times, boolean soft);
+	
+	/**
+	 * Tuong do undo
+	 * @param times
+	 * @param soft
+	 */
+	public void redo(int times, boolean soft);
+	
+	public int getPiece(ChessPosition pos);
+
+	public int[][] getShortTable();
+
+	public int[][] getTable();
+
+	public void setTable(int[][] table);
 }

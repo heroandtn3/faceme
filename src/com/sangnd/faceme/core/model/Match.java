@@ -15,22 +15,23 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package model;
+package com.sangnd.faceme.core.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import model.chess.Advisor;
-import model.chess.Bishop;
-import model.chess.Cannon;
-import model.chess.Chess;
-import model.chess.King;
-import model.chess.Knight;
-import model.chess.Pawn;
-import model.chess.Rook;
-import control.Computer;
-import control.ComputerMinmax;
-import control.MoveGeneratorNormal;
+import com.sangnd.faceme.core.control.Computer;
+import com.sangnd.faceme.core.control.ComputerMinmax;
+import com.sangnd.faceme.core.control.MoveGeneratorNormal;
+import com.sangnd.faceme.core.model.chess.Advisor;
+import com.sangnd.faceme.core.model.chess.Bishop;
+import com.sangnd.faceme.core.model.chess.Cannon;
+import com.sangnd.faceme.core.model.chess.Chess;
+import com.sangnd.faceme.core.model.chess.King;
+import com.sangnd.faceme.core.model.chess.Knight;
+import com.sangnd.faceme.core.model.chess.Pawn;
+import com.sangnd.faceme.core.model.chess.Rook;
+
 
 /**
  * @author heroandtn3

@@ -30,11 +30,11 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-import model.Board;
-import model.ChessPosition;
-import model.Constant;
-import model.GameState;
 
+import com.sangnd.faceme.core.model.Board;
+import com.sangnd.faceme.core.model.ChessPosition;
+import com.sangnd.faceme.core.model.Constant;
+import com.sangnd.faceme.core.model.GameState;
 import com.sangnd.faceme.event.HasSelectChessListener;
 import com.sangnd.faceme.event.SelectChessEvent;
 import com.sangnd.faceme.event.SelectChessListener;

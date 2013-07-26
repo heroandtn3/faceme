@@ -19,7 +19,7 @@
 /**
  * 
  */
-package model;
+package com.sangnd.faceme.core.model;
 
 import java.util.ArrayList;
 import java.util.List;

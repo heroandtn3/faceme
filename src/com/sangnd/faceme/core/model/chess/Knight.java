@@ -4,13 +4,14 @@
 /*
  * Author : HoangNv
  */
-package model.chess;
+package com.sangnd.faceme.core.model.chess;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import model.Board;
-import model.ChessPosition;
+import com.sangnd.faceme.core.model.Board;
+import com.sangnd.faceme.core.model.ChessPosition;
+
 
 
 

@@ -1,8 +1,9 @@
-package model.chess;
+package com.sangnd.faceme.core.model.chess;
 
 import java.util.List;
 
-import model.ChessPosition;
+import com.sangnd.faceme.core.model.ChessPosition;
+
 
 
 

@@ -15,14 +15,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package control;
+package com.sangnd.faceme.core.control;
 
 import java.util.List;
 
-import model.ChessPosition;
-import model.Level;
-import model.Match;
-import model.Side;
+import com.sangnd.faceme.core.model.ChessPosition;
+import com.sangnd.faceme.core.model.Level;
+import com.sangnd.faceme.core.model.Match;
+import com.sangnd.faceme.core.model.Side;
+
 
 
 
