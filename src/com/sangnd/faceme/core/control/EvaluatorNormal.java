@@ -39,9 +39,64 @@ public class EvaluatorNormal implements Evaluator {
 		int value = 0;
 		for (int row = 0; row < 10; row++) {
 			for (int col = 0; col < 9; col++) {
-				value += table[row][col];
+				value += value(table[row][col]);
 			}
 		}
+		//if (value < 0) value = -value;
+		System.out.println("Valuate return: " + value);
 		return value;
+	}
+	
+	private int value(int code) {
+		if (code < 0) {
+			switch (code) {
+				case -1:
+					// tuong
+					return -6000;
+				case -2:
+					// sy
+					return -120;
+				case -3:
+					// tuong
+					return -120;
+				case -4:
+					// xe
+					return -600;
+				case -5:
+					// phao
+					return -285;
+				case -6:
+					// ma
+					return -270;
+				case -7:
+					// tot
+					return -30;
+			}
+		} else if (code > 0) {
+			switch (code) {
+				case 1:
+					// tuong
+					return 6000;
+				case 2:
+					// sy
+					return 120;
+				case 3:
+					// tuong
+					return 120;
+				case 4:
+					// xe
+					return 600;
+				case 5:
+					// phao
+					return 285;
+				case 6:
+					// ma
+					return 270;
+				case 7:
+					// tot
+					return 30;
+			}
+		}
+		return 0;
 	}
 }

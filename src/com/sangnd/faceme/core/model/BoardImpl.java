@@ -24,6 +24,11 @@ package com.sangnd.faceme.core.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sangnd.faceme.core.control.Evaluator;
+import com.sangnd.faceme.core.control.EvaluatorNormal;
+import com.sangnd.faceme.core.control.MoveGenerator;
+import com.sangnd.faceme.core.control.MoveGeneratorNormal;
+
 /**
  * @author heroandtn3
  *
@@ -36,6 +41,8 @@ public class BoardImpl implements Board {
 	private List<ChessPosition[]> historyMove = new ArrayList<ChessPosition[]>();
 	private List<int[]> historyChess = new ArrayList<int[]>();
 	private int undoIndexPoint = 0;
+	private Evaluator evaluator = new EvaluatorNormal();
+	private MoveGenerator moveGenerator = new MoveGeneratorNormal();
 
 	/**
 	 * 
@@ -178,6 +185,16 @@ public class BoardImpl implements Board {
 			}
 		}
 		
+	}
+
+	@Override
+	public int value() {
+		return evaluator.evaluate(this);
+	}
+
+	@Override
+	public List<ChessPosition[]> getMoves(Side side) {
+		return moveGenerator.getMoves(this, side);
 	}
 
 }

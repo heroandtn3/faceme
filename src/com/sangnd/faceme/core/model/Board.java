@@ -17,6 +17,8 @@
  */
 package com.sangnd.faceme.core.model;
 
+import java.util.List;
+
 /**
  * @author heroandtn3
  * @date Jan 7, 2013
@@ -53,4 +55,8 @@ public interface Board {
 	public int[][] getTable();
 
 	public void setTable(int[][] table);
+	
+	public int value();
+	
+	public List<ChessPosition[]> getMoves(Side side);
 }
