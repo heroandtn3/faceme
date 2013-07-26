@@ -19,7 +19,6 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 
 import model.chess.Advisor;
 import model.chess.Bishop;
@@ -29,150 +28,194 @@ import model.chess.King;
 import model.chess.Knight;
 import model.chess.Pawn;
 import model.chess.Rook;
-import control.CheckFinishMatch;
-import control.CheckerFinish;
 import control.Computer;
 import control.ComputerMinmax;
-import control.MoveGenerator;
 import control.MoveGeneratorNormal;
-
 
 /**
  * @author heroandtn3
  * @date Jan 7, 2013
  */
-public class Match extends Observable {
+public class Match {
 
 	// game attributes
 	private Level level;
 	private GameState state;
 	private Side currentSide;
 	private Board board;
-	private Chess[] chess;
-	private Computer computer;
-	private CheckerFinish checkerFinish = new CheckFinishMatch();
-	private MoveGenerator generator = new MoveGeneratorNormal(this);
-	
-	private boolean checkmate = false; // chieu tuong
-	private final boolean playWithCom = true; // co dinh
-	
-	private int[][] table = {
-			{6,  4,  3,  2,  7,  2,  3,  4,  6},
-			{0,  0,  0,  0,  0,  0,  0,  0,  0},
-			{0,  5,  0,  0,  0,  0,  0,  5,  0},
-			{1,  0,  1,  0,  1,  0,  1,  0,  1},
-			{0,  0,  0,  0,  0,  0,  0,  0,  0},
-			{0,  0,  0,  0,  0,  0,  0,  0,  0},
-			{-1, 0, -1,  0, -1,  0, -1,  0, -1},
-			{0, -5,  0,  0,  0,  0,  0, -5,  0},
-			{0,  0,  0,  0,  0,  0,  0,  0,  0},
-			{-6,-4, -3, -2, -7, -2, -3, -4, -6} 
-		};
-	
+	public final static Chess[] CHESSs = new Chess[8];
+	private GameMode gameMode;
+
 	// game state attribues
 	private List<ChessPosition> posCanMove;
 	// vi tri cu va moi, dung de luu vet, undo,redo,...
 	private ChessPosition oldPos, newPos;
-	
-	// place AI computer in separate Thread 
-	private Thread aiThread;
+	private MoveGeneratorNormal moveGenerator = new MoveGeneratorNormal();
+	private boolean warnKing;
+	private Computer computer;
 
 	/**
 	 * 
 	 */
 	public Match() {
-		board = new Board(table);
-		initChess();
+		board = new BoardImpl();
 		oldPos = newPos = null;
 		posCanMove = new ArrayList<ChessPosition>();
 		state = GameState.PLAYING;
-		currentSide = Side.BLACK;
+		currentSide = Side.FRIEND;
+		gameMode = GameMode.TWO_PLAYER_OFFLINE;
+		initChess();
 		initComputer();
 	}
-	
-	private void initChess() {
-		chess = new Chess[8];
-		chess[0] = null;
-		chess[1] = new Pawn(board);
-		chess[2] = new Advisor(board);
-		chess[3] = new Bishop(board);
-		chess[4] = new Knight(board);
-		chess[5] = new Cannon(board);
-		chess[6] = new Rook(board);
-		chess[7] = new King(board);
-		
-		
-	}
-	
-	private void initComputer() {
-		if (playWithCom) {
-			computer = new ComputerMinmax(this,
-					(currentSide == Side.BLACK) ? Side.RED : Side.BLACK);
-			aiThread = new Thread(new AIRun());
-			aiThread.start(); // start AI thread
-		}
-	}
-	
-	/* For update game status -----------------------------------------------*/
-	
-	private void updateGameState() {
-		// kiem tra chieu tuong
-		checkmate = CheckingMate();
-		if (checkmate) {
-			System.out.println("Chieu tuong!!!");
-		}
-		
-		// kiem tra het co
-		state = checkerFinish.getState(this);
-		if (state == null) {
-			System.out.println("`state` is null");
-			return;
-		}
-		switch (state) {
-			case NONE:
-				System.out.println("Game is not stated yet!");
-				break;
-			case PLAYING:
-				Side oppSide = (currentSide == Side.BLACK) ?
-						Side.RED : Side.BLACK;
-				System.out.println(oppSide + " is thinkink...");
-				break;
-			case DRAW:
-				System.out.println("Game draw!");
-				break;
-			case BLACK_WON:
-				System.out.println("Black won!");
-				break;
-			case RED_WON:
-				System.out.println("Red won!");
-				break;
-			default:
-				System.out.println("`state` is unexpected result!");
-				break;
 
-		}
+	private void initChess() {
+		CHESSs[0] = null;
+		CHESSs[1] = new King(board);
+		CHESSs[2] = new Advisor(board);
+		CHESSs[3] = new Bishop(board);
+		CHESSs[4] = new Rook(board);
+		CHESSs[5] = new Cannon(board);
+		CHESSs[6] = new Knight(board);
+		CHESSs[7] = new Pawn(board);
+
 	}
-	
+
+	private void initComputer() {
+		computer = new ComputerMinmax(this,
+				(currentSide == Side.ENERMY) ? Side.FRIEND : Side.ENERMY);
+	}
+
 	/**
-	 * Kiem tra chieu tuong
-	 * @return true neu `currentPlayer` dang chieu tuong doi phuong
+	 * Ham thuc hien di chuyen quan co tu vi tri cu sang vi tri moi
+	 * 
+	 * @param oldPos
+	 * @param newPos
 	 */
-	public boolean CheckingMate() {
-		int tuongOpp;
-		if (currentSide == Side.BLACK) {
-			tuongOpp = 7;
-		} else {
-			tuongOpp = -7;
+	public void move(ChessPosition oldPos, ChessPosition newPos) {
+		board.move(oldPos, newPos);
+		this.posCanMove.clear();
+
+		updateGame();
+	}
+
+	private void updateGame() {
+
+		warnKing = checkWarnKing(currentSide);
+		state = checkFinishMatch();
+
+		// switch player
+		currentSide = (currentSide == Side.ENERMY) ? Side.FRIEND : Side.ENERMY;
+	}
+
+	private GameState checkFinishMatch() {
+		Side nextSide = (currentSide == Side.ENERMY) ? Side.FRIEND
+				: Side.ENERMY;
+
+		// het co khi: sau khi di chuyen ma tuong van bi chieu
+		if (checkWarnKing(nextSide)) {
+			System.out.println("TH1");
+			if (nextSide == Side.ENERMY) {
+				return GameState.ENERMY_WON;
+			} else {
+				return GameState.FRIEND_WON;
+			}
 		}
-		
-		List<ChessPosition[]> allMoves = generator.getMoves(currentSide);
-		for (ChessPosition[] pos : allMoves) {
-			if (table[pos[1].getRow()][pos[1].getCol()] == tuongOpp) {
-				return true;
+
+		// het co khi: doi phuong khong co nuoc nao de di
+		List<ChessPosition[]> allPos = moveGenerator.getMoves(board, nextSide);
+		if (allPos.size() == 0) {
+			System.out.println("TH2");
+			if (nextSide == Side.ENERMY) {
+				return GameState.FRIEND_WON;
+			} else {
+				return GameState.ENERMY_WON;
+			}
+		}
+
+		// het co khi: doi phuong di moi nuoc van khong thoat khoi chieu tuong
+		if (warnKing) {
+			boolean hasEscapeMove = false;
+			for (ChessPosition[] mv : allPos) {
+				board.move(mv[0], mv[1]);
+
+				List<ChessPosition[]> allPosCanMv = moveGenerator.getMoves(
+						board, currentSide);
+				// chi can 1 nuoc di de chong chieu tuong la du
+				if (!checkWarnKing(board.getTable(), allPosCanMv, currentSide)) {
+					hasEscapeMove = true;
+					board.undo(1, false);
+					break;
+				}
+
+				board.undo(1, false);
+			}
+
+			if (!hasEscapeMove) {
+				System.out.println("TH3");
+				if (nextSide == Side.ENERMY) {
+					return GameState.FRIEND_WON;
+				} else {
+					return GameState.ENERMY_WON;
+				}
+			}
+		}
+
+		return GameState.PLAYING;
+
+	}
+
+	/**
+	 * Kiem tra xem `side` co dang chieu tuong khong
+	 * 
+	 * @param side
+	 *            side kiem tra
+	 * @return
+	 */
+	private boolean checkWarnKing(Side side) {
+		return checkWarnKing(null, null, side);
+	}
+
+	private boolean checkWarnKing(int[][] table, List<ChessPosition[]> allPos,
+			Side side) {
+		if (table == null) {
+			table = board.getTable();
+		}
+
+		if (allPos == null) {
+			allPos = moveGenerator.getMoves(board, side);
+		}
+
+		// tim vi tri tuong cua doi phuong
+		int startRow = 0, endRow = 2;
+		int startCol = 3, endCol = 5;
+		int kingCode = -1;
+		int kingRow = -1, kingCol = -1;
+
+		if (side == Side.ENERMY) {
+			startRow = 7;
+			endRow = 9;
+			kingCode = 1;
+		}
+		for (int row = startRow; row <= endRow; row++) {
+			for (int col = startCol; col <= endCol; col++) {
+				if (kingCode == table[row][col]) {
+					kingRow = row;
+					kingCol = col;
+					break;
+				}
+			}
+		}
+
+		if (kingRow != -1) {
+			for (ChessPosition[] pos : allPos) {
+				if (pos[1].getRow() == kingRow && pos[1].getCol() == kingCol) {
+					return true;
+				}
 			}
 		}
 
 		return false;
+
 	}
 
 	private void updatePosCanMove() {
@@ -181,124 +224,59 @@ public class Match extends Observable {
 		} else {
 			int row = oldPos.getRow();
 			int col = oldPos.getCol();
-			int value = Math.abs(table[row][col]);
-			ChessPosition currentPos = 
-					new ChessPosition(row, col);
-			posCanMove = chess[value].getPosCanMove(currentPos);
-		}
-		// thong bao cho view update
-		setChanged();
-		notifyObservers();
-	}
-	
-	/* For moving chess------------------------------------------------------*/
-	
-	/**
-	 * Ham thuc hien di chuyen quan co tu vi tri cu sang vi tri moi
-	 * @param oldPos
-	 * @param newPos
-	 */
-	public void move(ChessPosition oldPos, ChessPosition newPos) {
-		if (state == GameState.PLAYING) {
-			int[][] mt = board.getTable();
-			
-			// thay gia tri newPos bang gia tri o oldPos
-			int tmp = mt[oldPos.getRow()][oldPos.getCol()];
-			mt[oldPos.getRow()][oldPos.getCol()] = 0; // vi tri cu chuyen ve 0
-			mt[newPos.getRow()][newPos.getCol()] = tmp;
-			
-			// clear posCanMove
-			this.posCanMove.clear();
-			
-			updateGameState();
-			
-			// switch player
-			currentSide = (currentSide == Side.BLACK) ?
-					Side.RED : Side.BLACK;
-			
-			// danh dau la da thay doi va gui yeu cau update den cac observers
-			setChanged();
-			notifyObservers();
+			int value = Math.abs(board.getPiece(oldPos));
+			ChessPosition currentPos = new ChessPosition(row, col);
+			posCanMove = CHESSs[value].getPosCanMove(currentPos);
 		}
 	}
-	
-	public void setPos(ChessPosition pos) {
-		if (isChooseForMove(pos)) { // chon quan de di chuyen
-			// loai bo pos khong hop le
-			if (table[pos.getRow()][pos.getCol()] == 0) return;
-			
-			oldPos = pos; // neu hop le thi danh dau oldPos da chon
-			newPos = null; // va bo danh dau newPos
-			
-			// update pos can move
-			updatePosCanMove();
-		} else if (oldPos != null){ // neu da co pos duoc chon
-			// thi di chuyen quan den vi tri moi
-			
-			// vi tri di chuyen den phai nam trong posCanMove
-			boolean validPos = false;
-			for (ChessPosition posCM : posCanMove) {
-				if (posCM.getRow() == pos.getRow() &&
-					posCM.getCol() == pos.getCol()) {
-					validPos = true;
-					break;
-				}
-			}
-			if (validPos == false) return;
-		
-			// vi tri hop le thi tien hanh di chuyens
-			newPos = pos;
-			this.move(oldPos, newPos);
-			
-			// may tinh di chuyen
-			if (playWithCom) {
-				// ai thread
-				synchronized (computer) {
-					computer.notify();
-				}
-			}
-		}
-		
-	}
-	
+
 	private boolean isChooseForMove(ChessPosition pos) {
-		int value = table[pos.getRow()][pos.getCol()];
-		if ((currentSide == Side.RED && value > 0) ||
-			(currentSide == Side.BLACK && value < 0)) {
+		int piece = board.getPiece(pos);
+		if ((currentSide == Side.FRIEND && piece > 0)
+				|| (currentSide == Side.ENERMY && piece < 0)) {
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
-	/*ai code--------------------------------------------------------------*/
-	class AIRun implements Runnable {
-		private volatile boolean stopped = false;
-		@Override
-		public void run() {
-			while (!stopped) {
-				synchronized (computer) {
-					try {
-						computer.wait(); // wait until computer.notify 
-					} catch (InterruptedException e) {
-						Thread.currentThread().interrupt();
-						return;
-					}
-				}
 
-				ChessPosition[] comMove = computer.getBestMove(level);
-				if (comMove != null) {
-					oldPos = comMove[0];
-					newPos = comMove[1];
-					move(oldPos, newPos);
-				} else {
-					state = GameState.BLACK_WON;
+	public void setPos(ChessPosition pos) {
+		if (state != GameState.PLAYING) {
+			System.out.println("finish game: " + state);
+			return;
+		}
+		if (isChooseForMove(pos)) { // chon quan de di chuyen
+			// loai bo pos khong hop le
+			if (board.getPiece(pos) == 0)
+				return;
+
+			oldPos = pos; // neu hop le thi danh dau oldPos da chon
+			newPos = null;
+			updatePosCanMove();
+
+		} else if (oldPos != null) { // neu da co pos duoc chon
+			// thi di chuyen quan den vi tri moi
+
+			// vi tri di chuyen den phai nam trong posCanMove
+			boolean validPos = false;
+			for (ChessPosition posCM : posCanMove) {
+				if (posCM.getRow() == pos.getRow()
+						&& posCM.getCol() == pos.getCol()) {
+					validPos = true;
+					break;
 				}
 			}
+			if (validPos == false)
+				return;
+
+			// vi tri hop le thi tien hanh di chuyen
+			newPos = pos;
+			this.move(oldPos, newPos);
 		}
+
 	}
 
-	/* get, set -------------------------------------------------------------*/
+	/* get, set ------------------------------------------------------------- */
 	public Level getLevel() {
 		return level;
 	}
@@ -323,14 +301,6 @@ public class Match extends Observable {
 		this.board = board;
 	}
 
-	public Chess[] getChess() {
-		return chess;
-	}
-
-	public void setChess(Chess[] chess) {
-		this.chess = chess;
-	}
-
 	public List<ChessPosition> getPosCanMove() {
 		return posCanMove;
 	}
@@ -343,11 +313,33 @@ public class Match extends Observable {
 		return newPos;
 	}
 
-	public Side getCurrentSide() {
-		return currentSide;
+	public void clearAfterMove() {
+		oldPos = null;
+		newPos = null;
 	}
 
-	public boolean isCheckmate() {
-		return checkmate;
+	public Side getCurrentSide() {
+		return currentSide;
+	}	
+
+	public void setCurrentSide(Side currentSide) {
+		this.currentSide = currentSide;
 	}
+
+	public boolean isWarnKing() {
+		return warnKing;
+	}
+
+	public Computer getComputer() {
+		return computer;
+	}
+
+	public GameMode getGameMode() {
+		return gameMode;
+	}
+
+	public void setGameMode(GameMode gameMode) {
+		this.gameMode = gameMode;
+	}
+
 }

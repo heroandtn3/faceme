@@ -24,6 +24,9 @@ import model.Level;
 import model.Match;
 import model.Side;
 
+
+
+
 /**
  * @author heroandtn3
  * @date Jan 7, 2013
@@ -31,81 +34,34 @@ import model.Side;
 public class ComputerMinmax implements Computer {
 
 	private Match match;
-	private Side mySide; // computer side - max
-	private Side oppSide; // opponent side - min
+	private Side side;
 	private MoveGenerator moveGenerator;
-	private Evaluator evaluator;
-	private ChessPosition[] bestMove;
-	private int[][] table;
 	/**
 	 * 
 	 */
 	public ComputerMinmax(Match match, Side side) {
 		this.match = match;
-		match.getBoard().makeCloneTable();
-		mySide = side;
-		oppSide = (mySide == Side.BLACK) ? Side.RED : Side.BLACK;
-		this.bestMove = null;
-		moveGenerator = new MoveGeneratorNormal(match);
-		evaluator = new EvaluatorNormal();
+		this.side = side;
+		moveGenerator = new MoveGeneratorNormal();
 	}
 
 	@Override
 	public ChessPosition[] getBestMove(Level level) {
-		this.table = match.getBoard().getCloneTable();
-		minmax(3, mySide);
-		return bestMove;
+		List<ChessPosition[]> allMoves = moveGenerator.getMoves(match.getBoard(), side);
+		int x = (int) (Math.random() * allMoves.size());  
+		return moveGenerator.getMoves(match.getBoard(), side).get(x);
 	}
-	
-	private int minmax(int depth, Side side) {
-		int currentScore;
-		int bestScore = (side == mySide) ? 
-				Integer.MIN_VALUE : Integer.MAX_VALUE;
-		
-		List<ChessPosition[]> nextMoves = moveGenerator.getMoves(side);
-		
-		// check
-		if (nextMoves.isEmpty() || depth <= 0) { 
-			// dat toi do sau hoac het nuoc di
-			bestScore = evaluator.evaluate(match.getBoard());
-		} else {
-			for (ChessPosition[] pos : nextMoves) {
-				// try move
-				int row1 = pos[0].getRow();
-				int col1 = pos[0].getCol();
-				int row2 = pos[1].getRow();
-				int col2 = pos[1].getCol();
-				// backup
-				int oldValue = table[row1][col1];
-				int newValue = table[row2][col2];
-				// move
-				table[row1][col1] = 0;
-				table[row2][col2] = oldValue;
-				
-				if (side == mySide) {
-					//find max
-					currentScore = minmax(depth - 1, oppSide);
-					if (currentScore > bestScore) {
-						bestScore = currentScore;
-						ChessPosition oldPos = new ChessPosition(row1, col1);
-						ChessPosition newPos = new ChessPosition(row2, col2);
-						bestMove = new ChessPosition[] {oldPos, newPos};
-					}
-				} else {
-					// find min
-					currentScore = minmax(depth - 1, mySide);
-					if (currentScore < bestScore) {
-						bestScore = currentScore;
-						ChessPosition oldPos = new ChessPosition(row1, col1);
-						ChessPosition newPos = new ChessPosition(row2, col2);
-						bestMove = new ChessPosition[] {oldPos, newPos};
-					}
-				}
-				// undo move
-				table[row1][col1] = oldValue;
-				table[row2][col2] = newValue;
-			}
-		}
-		return bestScore;
+
+	@Override
+	public Side getSide() {
+		return this.side;
 	}
+
+
+	@Override
+	public void move() {
+		ChessPosition[] mv = getBestMove(null);
+	}
+
+
 }

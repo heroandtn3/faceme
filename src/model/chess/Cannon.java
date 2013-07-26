@@ -9,18 +9,17 @@ package model.chess;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ImageIcon;
-
 import model.Board;
 import model.ChessPosition;
-import model.Constant;
 
-public class Cannon extends Chess {
+
+
+public class Cannon implements Chess {
+
+	private Board board;
 
 	public Cannon(Board board) {
-		super(board);
-		imgRed = new ImageIcon(Constant.CHESS_DIR + "phaodo.png").getImage();
-		imgBlack = new ImageIcon(Constant.CHESS_DIR + "phaoden.png").getImage();
+		this.board = board;
 	}
 
 	@Override

@@ -17,31 +17,30 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package control;
+package com.sangnd.faceme.view;
 
 import java.util.List;
 
 import model.Board;
 import model.ChessPosition;
-import model.Side;
+import model.GameState;
 
-
-
+import com.sangnd.mvp.activityplace.View;
 
 /**
  * @author heroandtn3
- * @date Jan 30, 2013
+ * @date Jul 23, 2013
  */
-public interface MoveGenerator {
+public interface BoardView extends View {
+	
+	void renderBoard(Board board);
+	
+	void renderMoving(ChessPosition oldPos, ChessPosition newPos);
+	
+	void renderChessSelect(ChessPosition selectedPos, List<ChessPosition> posCanMove);
 
-	/**
-	 * Ham liet ke tat ca cac nuoc di co the
-	 * @param side quan do (Side.FRIEND) hoac quan den (Side.ENERMY)
-	 * @return danh sach lien ket chua cac phan tu la mang ChessPosition[] co
-	 * 2 phan tu chua thong tin buoc di chuyen, trong do:
-	 * [0]: vi tri dau
-	 * [1]: vi tri cuoi
-	 */
-	public abstract List<ChessPosition[]> getMoves(Board board, Side side);
+	void renderWarnKing(boolean warnKing);
 
+	void renderMatchFinish(GameState state);
+	
 }

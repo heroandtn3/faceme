@@ -6,19 +6,18 @@ package model.chess;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ImageIcon;
-
 import model.Board;
 import model.ChessPosition;
-import model.Constant;
 
-public class Bishop extends Chess {
+
+
+public class Bishop implements Chess {
 	
 
+	private Board board;
+
 	public Bishop(Board board) {
-		super(board);
-		imgRed = new ImageIcon(Constant.CHESS_DIR + "tinhdo.png").getImage();
-		imgBlack = new ImageIcon(Constant.CHESS_DIR + "tinhden.png").getImage();
+		this.board = board;
 	}
 
 	@Override

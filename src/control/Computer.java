@@ -19,6 +19,7 @@ package control;
 
 import model.ChessPosition;
 import model.Level;
+import model.Side;
 
 /**
  * @author heroandtn3
@@ -33,4 +34,8 @@ public interface Computer {
 	 * [1]: newPos
 	 */
 	public ChessPosition[] getBestMove(Level level);
+	
+	public Side getSide();
+	
+	public void move();
 }

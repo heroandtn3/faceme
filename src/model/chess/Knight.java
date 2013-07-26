@@ -9,18 +9,17 @@ package model.chess;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ImageIcon;
-
 import model.Board;
 import model.ChessPosition;
-import model.Constant;
 
-public class Knight extends Chess {
+
+
+public class Knight implements Chess {
+
+	private Board board;
 
 	public Knight(Board board) {
-		super(board);
-		imgRed = new ImageIcon(Constant.CHESS_DIR + "mado.png").getImage();
-		imgBlack = new ImageIcon(Constant.CHESS_DIR + "maden.png").getImage();
+		this.board = board;
 	}
 
 	@Override

@@ -17,16 +17,36 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package control;
+package com.sangnd.faceme.activities.play;
 
+import java.util.List;
+
+import javax.swing.JButton;
+
+import model.Board;
+import model.ChessPosition;
 import model.GameState;
-import model.Match;
+
+import com.sangnd.faceme.event.HasSelectChessListener;
+import com.sangnd.mvp.activityplace.View;
 
 /**
  * @author heroandtn3
- * @date Apr 9, 2013
+ * @date Jul 23, 2013
  */
-public interface CheckerFinish {
+public interface PlayView extends View {
 	
-	GameState getState(Match match);
+	JButton getHomeButton();
+	
+	HasSelectChessListener getBoardView();
+
+	void renderBoard(Board board);
+	
+	void renderMoving(ChessPosition oldPos, ChessPosition newPos);
+	
+	void renderChessSelect(ChessPosition selectedPos, List<ChessPosition> posCanMove);
+
+	void renderWarnKing(boolean warnKing);
+
+	void renderMatchFinish(GameState state);
 }

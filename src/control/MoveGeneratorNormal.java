@@ -22,29 +22,26 @@ package control;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.Board;
 import model.ChessPosition;
 import model.Match;
 import model.Side;
+
+
+
 
 /**
  * @author heroandtn3
  * @date Jan 30, 2013
  */
-public class MoveGeneratorNormal extends MoveGenerator {
-
-	/**
-	 * @param match
-	 */
-	public MoveGeneratorNormal(Match match) {
-		super(match);
-	}
+public class MoveGeneratorNormal implements MoveGenerator {
 
 	@Override
-	public List<ChessPosition[]> getMoves(Side side) {
+	public List<ChessPosition[]> getMoves(Board board, Side side) {
 		List<ChessPosition[]> allMoves = new ArrayList<ChessPosition[]>();
 
 		List<ChessPosition> posCanMove;
-		int[][] table = match.getBoard().getCloneTable();
+		int[][] table = board.getTable();
 		
 		for (int row = 0; row < 10; row++) {
 			for (int col = 0; col < 9; col++) {
@@ -54,7 +51,7 @@ public class MoveGeneratorNormal extends MoveGenerator {
 					ChessPosition currentPos = new ChessPosition(row, col);
 					
 					// cac vi tri co the di
-					posCanMove = match.getChess()[Math.abs(value)]
+					posCanMove = Match.CHESSs[Math.abs(value)]
 							.getPosCanMove(currentPos);
 					
 					// them tat ca cac nuoc di vao list
@@ -69,13 +66,13 @@ public class MoveGeneratorNormal extends MoveGenerator {
 	
 	/**
 	 * Ham kiem tra quan co co gia tri value co nam trong team side khong
-	 * @param side RED hoac BLACK
+	 * @param side FRIEND hoac ENERMY
 	 * @param value gia tri cua o dang xet
 	 * @return true neu quan co nam cung team, nguoc lai thi false
 	 */
 	private boolean isInTeam(Side side, int value) {
-		if ((side == Side.BLACK && value < 0) ||
-			(side == Side.RED && value > 0)) {
+		if ((side == Side.ENERMY && value < 0) ||
+			(side == Side.FRIEND && value > 0)) {
 			return true;
 		} else {
 			return false;

@@ -26,6 +26,10 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.ImageIcon;
+import javax.swing.JPanel;
+
+import com.sangnd.faceme.event.HasSelectChessListener;
+import com.sangnd.faceme.event.SelectChessListener;
 
 import model.ChessPosition;
 import model.Constant;
@@ -35,13 +39,16 @@ import model.Match;
  * @author heroandtn3
  * @date Jan 17, 2013
  */
-public class BoardPanel extends CardPanel implements MouseListener {
+public class BoardPanel extends JPanel implements MouseListener, HasSelectChessListener {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public final static String KEY = "BoardPanel";
+
+	/**
+	 * 
+	 */
 
 	private Match match;
 	private int[][] table;
@@ -54,9 +61,7 @@ public class BoardPanel extends CardPanel implements MouseListener {
 	/**
 	 * 
 	 */
-	public BoardPanel(GamePanel gamePanel) {
-		super(gamePanel);
-		this.match = gamePanel.getMatch();
+	public BoardPanel() {
 		init();
 		initGUI();
 	}
@@ -64,13 +69,6 @@ public class BoardPanel extends CardPanel implements MouseListener {
 	private void init() {
 		table = match.getBoard().getTable();
 		
-		// cai dat observer cho match
-		match.addObserver(new Observer() {
-			@Override
-			public void update(Observable o, Object arg) {
-				repaint();
-			}
-		});
 	}
 
 	private void initGUI() {
@@ -120,23 +118,7 @@ public class BoardPanel extends CardPanel implements MouseListener {
 	 * Ve cac quan co
 	 * @param g
 	 */
-	private void drawChess(Graphics g) {
-		for (int row = 0; row < 10; row++) {
-			for (int col = 0; col < 9; col++) {
-				int value = table[row][col];
-				if (value != 0) { // kiem tra xem co quan co khong
-					// neu co thi tien hanh ve
-					Image img = match.getChess()[Math.abs(value)]
-							.getShape(value); // lay hinh anh cua quan co de ve
-					if (img != null) {
-						int[] pos = convertToXY(new ChessPosition(row, col));
-														// sang x, y de ve
-						g.drawImage(img, pos[0] - 21, pos[1] - 21, null);
-					}
-				}
-			}
-		}
-	}
+	private void drawChess(Graphics g) {}
 	
 	private void drawPos(Graphics g, ChessPosition pos) {
 		if (pos != null) {
@@ -227,6 +209,12 @@ public class BoardPanel extends CardPanel implements MouseListener {
 
 	@Override
 	public void mouseExited(MouseEvent e) {
+		
+	}
+
+	@Override
+	public void addSelectChessListener(SelectChessListener listener) {
+		// TODO Auto-generated method stub
 		
 	}
 

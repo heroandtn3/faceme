@@ -35,7 +35,7 @@ public class EvaluatorNormal implements Evaluator {
 
 	@Override
 	public int evaluate(Board board) {
-		int[][] table = board.getCloneTable();
+		int[][] table = board.getTable();
 		int value = 0;
 		for (int row = 0; row < 10; row++) {
 			for (int col = 0; col < 9; col++) {

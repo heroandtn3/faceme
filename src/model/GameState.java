@@ -26,6 +26,6 @@ public enum GameState {
 	PLAYING,
 	PAUSE,
 	DRAW,
-	BLACK_WON, 
-	RED_WON
+	ENERMY_WON, 
+	FRIEND_WON
 }

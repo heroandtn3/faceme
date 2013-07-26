@@ -21,58 +21,36 @@ package model;
  * @author heroandtn3
  * @date Jan 7, 2013
  */
-public class Board {
+public interface Board {
 
-	private int[][] table;
-	private int[][] cloneTable;
+
 
 	/**
 	 * 
 	 */
-	public Board() {
-		table = new int[10][9];
-		cloneTable = new int[10][9];
-	}
 	
-	public Board(int[][] table) {
-		this.table = table;
-		cloneTable = new int[10][9];
-		makeCloneTable();
-	}
+	public void move(ChessPosition oldPos, ChessPosition newPos);
 	
 	/**
-	 * Clone a board from `oriBoard`
-	 * @param oriBoard
+	 * Undo nhung nuoc da di
+	 * @param times so luot di quan can undo
+	 * @param soft true khi undo chi la quay lai tam thoi va khong anh
+	 * huong den trang thai ban co
 	 */
-	public Board(Board oriBoard) {
-		// copy table contents
-		this.table = new int[10][9];
-		for (int row = 0; row < 10; row++) {
-			for (int col = 0; col < 9; col++) {
-				this.table[row][col] = oriBoard.getTable()[row][col];
-			}
-		}
-		cloneTable = new int[10][9];
-		makeCloneTable();
-	}
+	public void undo(int times, boolean soft);
 	
-	public void makeCloneTable() {
-		for (int row = 0; row < 10; row++) {
-			for (int col = 0; col < 9; col++) {
-				cloneTable[row][col] = table[row][col];
-			}
-		}
-	}
+	/**
+	 * Tuong do undo
+	 * @param times
+	 * @param soft
+	 */
+	public void redo(int times, boolean soft);
+	
+	public int getPiece(ChessPosition pos);
 
-	public int[][] getTable() {
-		return table;
-	}
+	public int[][] getShortTable();
 
-	public void setTable(int[][] table) {
-		this.table = table;
-	}
+	public int[][] getTable();
 
-	public int[][] getCloneTable() {
-		return cloneTable;
-	}
+	public void setTable(int[][] table);
 }

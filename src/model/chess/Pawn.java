@@ -6,20 +6,18 @@ package model.chess;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ImageIcon;
-
 import model.Board;
 import model.ChessPosition;
-import model.Constant;
 
-public class Pawn extends Chess {
+
+
+public class Pawn implements Chess {
 
 	private boolean passedRiver = false;
+	private Board board;
 
 	public Pawn(Board board) {
-		super(board);
-		imgRed = new ImageIcon(Constant.CHESS_DIR + "totdo.png").getImage();
-		imgBlack = new ImageIcon(Constant.CHESS_DIR + "totden.png").getImage();
+		this.board = board;
 	}
 
 	private boolean CheckPassRiver(ChessPosition current, int side) {
@@ -35,14 +33,17 @@ public class Pawn extends Chess {
 		x = current.getCol();
 		y = current.getRow();
 		if (y <= 4)
-			omg = 1;
-		else
 			omg = -1;
+		else
+			omg = 1;
 		passedRiver = CheckPassRiver(current, omg);
 		value = board.getTable()[y][x];
 		if (passedRiver) {
+			
+			// go forward
 			tmpX = x;
 			tmpY = y - omg;
+			
 			if ((tmpY >= 0)
 					&& (tmpY <= 9)
 					&& ((board.getTable()[tmpY][tmpX] == 0) || (board
@@ -53,6 +54,7 @@ public class Pawn extends Chess {
 					CpTemp = new ChessPosition(tmpX, tmpY, false);
 				}
 				pos.add(CpTemp);
+				
 			}
 			tmpX = x - 1;
 			tmpY = y;
@@ -82,7 +84,7 @@ public class Pawn extends Chess {
 			}
 		} else {
 			tmpX = x;
-			tmpY = y + omg;
+			tmpY = y - omg;
 			if ((tmpY >= 0)
 					&& ((board.getTable()[tmpY][tmpX] == 0) || (board
 							.getTable()[tmpY][tmpX] * value < 0))) {

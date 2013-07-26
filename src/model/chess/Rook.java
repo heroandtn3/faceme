@@ -8,18 +8,17 @@ package model.chess;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ImageIcon;
-
 import model.Board;
 import model.ChessPosition;
-import model.Constant;
 
-public class Rook extends Chess {
+
+
+public class Rook implements Chess {
 	
+	private Board board;
+
 	public Rook(Board board) {
-		super(board);
-		imgRed = new ImageIcon(Constant.CHESS_DIR + "xedo.png").getImage();
-		imgBlack = new ImageIcon(Constant.CHESS_DIR + "xeden.png").getImage();
+		this.board = board;
 		
 	}
 
