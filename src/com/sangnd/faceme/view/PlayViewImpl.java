@@ -29,6 +29,7 @@ import com.sangnd.faceme.activities.play.PlayView;
 import com.sangnd.faceme.core.model.Board;
 import com.sangnd.faceme.core.model.ChessPosition;
 import com.sangnd.faceme.core.model.GameState;
+import com.sangnd.faceme.event.HasMoveCompleteListener;
 import com.sangnd.faceme.event.HasSelectChessListener;
 
 /**
@@ -89,6 +90,11 @@ public class PlayViewImpl implements PlayView {
 	@Override
 	public void renderMatchFinish(GameState state) {
 		boardView.renderMatchFinish(state);
+	}
+
+	@Override
+	public HasMoveCompleteListener getMoveChessPanel() {
+		return (HasMoveCompleteListener) boardView;
 	}
 
 }

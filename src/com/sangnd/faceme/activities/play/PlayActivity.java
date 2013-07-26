@@ -19,10 +19,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.sangnd.faceme.activities.play;
 
-
 import com.sangnd.faceme.activities.ClientFactory;
 import com.sangnd.faceme.core.model.ChessPosition;
+import com.sangnd.faceme.core.model.GameMode;
 import com.sangnd.faceme.core.model.Match;
+import com.sangnd.faceme.event.MoveCompleteEvent;
+import com.sangnd.faceme.event.MoveCompleteListener;
 import com.sangnd.faceme.event.SelectChessEvent;
 import com.sangnd.faceme.event.SelectChessListener;
 import com.sangnd.mvp.activityplace.AcceptOnePanel;
@@ -33,8 +35,9 @@ import com.sangnd.mvp.activityplace.Activity;
  * @date Jul 23, 2013
  */
 public class PlayActivity extends Activity {
-	
+
 	private ClientFactory clientFactory;
+	private Match match;
 
 	public PlayActivity(ClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
@@ -43,31 +46,59 @@ public class PlayActivity extends Activity {
 	@Override
 	public void start(AcceptOnePanel container) {
 		final PlayView view = clientFactory.getPlayView();
-		
-		final Match match = new Match();
-		
+
+		match = new Match();
+		match.setGameMode(GameMode.PLAY_WITH_COMPUTER);
+
 		view.renderBoard(match.getBoard());
-		
+
 		view.getBoardView().addSelectChessListener(new SelectChessListener() {
-			
+
 			@Override
 			public void onSelect(SelectChessEvent event) {
 				ChessPosition pos = (ChessPosition) event.getSource();
-				match.setPos(pos);
-				
-				// This must be before moving chess!!!
-				view.renderWarnKing(match.isWarnKing());
-				view.renderMatchFinish(match.getState());
-				
-				if (match.getNewPos() != null) {
-					view.renderMoving(match.getOldPos(), match.getNewPos());
-				} else {
-					view.renderChessSelect(match.getOldPos(), match.getPosCanMove());
-				}
+				doChessSelectEvent(pos, view);
 			}
 		});
-		
+
+		view.getMoveChessPanel().addMoveCompleteListener(
+				new MoveCompleteListener() {
+
+					@Override
+					public void onComplete(MoveCompleteEvent event) {
+						if (match.getGameMode() == GameMode.PLAY_WITH_COMPUTER) {
+							if (match.getCurrentSide() == match.getComputer()
+									.getSide()) {
+								match.getComputer().move();
+							}
+						}
+					}
+				});
+
+		match.getComputer().addSelectChessListener(new SelectChessListener() {
+
+			@Override
+			public void onSelect(SelectChessEvent event) {
+				ChessPosition pos = (ChessPosition) event.getSource();
+				doChessSelectEvent(pos, view);
+			}
+		});
+
 		container.setPanel(view.asPanel());
+	}
+
+	private void doChessSelectEvent(ChessPosition pos, PlayView view) {
+		match.setPos(pos);
+
+		// This must be before moving chess!!!
+		view.renderWarnKing(match.isWarnKing());
+		view.renderMatchFinish(match.getState());
+
+		if (match.getNewPos() != null) {
+			view.renderMoving(match.getOldPos(), match.getNewPos());
+		} else {
+			view.renderChessSelect(match.getOldPos(), match.getPosCanMove());
+		}
 	}
 
 }

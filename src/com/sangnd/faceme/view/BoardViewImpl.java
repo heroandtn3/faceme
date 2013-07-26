@@ -35,7 +35,9 @@ import com.sangnd.faceme.core.model.Board;
 import com.sangnd.faceme.core.model.ChessPosition;
 import com.sangnd.faceme.core.model.Constant;
 import com.sangnd.faceme.core.model.GameState;
+import com.sangnd.faceme.event.HasMoveCompleteListener;
 import com.sangnd.faceme.event.HasSelectChessListener;
+import com.sangnd.faceme.event.MoveCompleteListener;
 import com.sangnd.faceme.event.SelectChessEvent;
 import com.sangnd.faceme.event.SelectChessListener;
 
@@ -43,7 +45,7 @@ import com.sangnd.faceme.event.SelectChessListener;
  * @author heroandtn3
  * @date Jul 23, 2013
  */
-public class BoardViewImpl extends JPanel implements BoardView, MouseListener, HasSelectChessListener {
+public class BoardViewImpl extends JPanel implements BoardView, MouseListener, HasSelectChessListener, HasMoveCompleteListener {
 
 	/**
 	 * 
@@ -65,7 +67,7 @@ public class BoardViewImpl extends JPanel implements BoardView, MouseListener, H
 	private Image imgPhaoDen;
 	private Image imgMaDen;
 	private Image imgTotDen;
-	private SelectChessListener listener;
+	private SelectChessListener selectChessListener;
 	private Image imgSelect;
 	private Image imgCanMove;
 	private Image imgCanKill;
@@ -76,6 +78,7 @@ public class BoardViewImpl extends JPanel implements BoardView, MouseListener, H
 	private Image imgWarnKing;
 	private GameState state;
 	private Image imgFinish;
+	private MoveCompleteListener moveCompleteListener;
 
 	/**
 	 * 
@@ -278,6 +281,7 @@ public class BoardViewImpl extends JPanel implements BoardView, MouseListener, H
 		this.oldPos = oldPos;
 		this.newPos = newPos;
 		this.repaint();
+		moveCompleteListener.onComplete(null);
 	}
 
 	@Override
@@ -304,7 +308,7 @@ public class BoardViewImpl extends JPanel implements BoardView, MouseListener, H
 		// loai bo neu la null
 		if (pos == null) return;
 		
-		listener.onSelect(new SelectChessEvent(pos));
+		selectChessListener.onSelect(new SelectChessEvent(pos));
 	}
 
 	@Override
@@ -327,7 +331,7 @@ public class BoardViewImpl extends JPanel implements BoardView, MouseListener, H
 
 	@Override
 	public void addSelectChessListener(SelectChessListener listener) {
-		this.listener = listener;
+		this.selectChessListener = listener;
 	}
 
 	@Override
@@ -338,5 +342,11 @@ public class BoardViewImpl extends JPanel implements BoardView, MouseListener, H
 	@Override
 	public void renderMatchFinish(GameState state) {
 		this.state = state;
+	}
+
+	@Override
+	public void addMoveCompleteListener(MoveCompleteListener listener) {
+		moveCompleteListener = listener;
+		
 	}
 }

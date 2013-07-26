@@ -23,6 +23,8 @@ import com.sangnd.faceme.core.model.ChessPosition;
 import com.sangnd.faceme.core.model.Level;
 import com.sangnd.faceme.core.model.Match;
 import com.sangnd.faceme.core.model.Side;
+import com.sangnd.faceme.event.SelectChessEvent;
+import com.sangnd.faceme.event.SelectChessListener;
 
 
 
@@ -37,6 +39,7 @@ public class ComputerMinmax implements Computer {
 	private Match match;
 	private Side side;
 	private MoveGenerator moveGenerator;
+	private SelectChessListener listener;
 	/**
 	 * 
 	 */
@@ -46,8 +49,7 @@ public class ComputerMinmax implements Computer {
 		moveGenerator = new MoveGeneratorNormal();
 	}
 
-	@Override
-	public ChessPosition[] getBestMove(Level level) {
+	private ChessPosition[] getBestMove(Level level) {
 		List<ChessPosition[]> allMoves = moveGenerator.getMoves(match.getBoard(), side);
 		int x = (int) (Math.random() * allMoves.size());  
 		return moveGenerator.getMoves(match.getBoard(), side).get(x);
@@ -62,6 +64,13 @@ public class ComputerMinmax implements Computer {
 	@Override
 	public void move() {
 		ChessPosition[] mv = getBestMove(null);
+		listener.onSelect(new SelectChessEvent(mv[0]));
+		listener.onSelect(new SelectChessEvent(mv[1]));
+	}
+
+	@Override
+	public void addSelectChessListener(SelectChessListener listener) {
+		this.listener = listener;
 	}
 
 

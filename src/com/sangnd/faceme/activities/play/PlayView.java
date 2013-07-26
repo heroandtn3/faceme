@@ -27,6 +27,7 @@ import javax.swing.JButton;
 import com.sangnd.faceme.core.model.Board;
 import com.sangnd.faceme.core.model.ChessPosition;
 import com.sangnd.faceme.core.model.GameState;
+import com.sangnd.faceme.event.HasMoveCompleteListener;
 import com.sangnd.faceme.event.HasSelectChessListener;
 import com.sangnd.mvp.activityplace.View;
 
@@ -39,6 +40,8 @@ public interface PlayView extends View {
 	JButton getHomeButton();
 	
 	HasSelectChessListener getBoardView();
+	
+	HasMoveCompleteListener getMoveChessPanel();
 
 	void renderBoard(Board board);
 	

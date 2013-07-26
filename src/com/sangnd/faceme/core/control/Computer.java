@@ -17,23 +17,14 @@
  */
 package com.sangnd.faceme.core.control;
 
-import com.sangnd.faceme.core.model.ChessPosition;
-import com.sangnd.faceme.core.model.Level;
 import com.sangnd.faceme.core.model.Side;
+import com.sangnd.faceme.event.HasSelectChessListener;
 
 /**
  * @author heroandtn3
  * @date Jan 7, 2013
  */
-public interface Computer {
-	/**
-	 * 
-	 * @param level do kho
-	 * @return mang 2 phan tu ChessPosition:
-	 * [0]: oldPos
-	 * [1]: newPos
-	 */
-	public ChessPosition[] getBestMove(Level level);
+public interface Computer extends HasSelectChessListener {
 	
 	public Side getSide();
 	
