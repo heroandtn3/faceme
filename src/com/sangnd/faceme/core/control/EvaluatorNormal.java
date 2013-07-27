@@ -43,7 +43,7 @@ public class EvaluatorNormal implements Evaluator {
 			}
 		}
 		//if (value < 0) value = -value;
-		System.out.println("Valuate return: " + value);
+		//System.out.println("Valuate return: " + value);
 		return value;
 	}
 	

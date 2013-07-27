@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sangnd.faceme.core.control.Computer;
+import com.sangnd.faceme.core.control.ComputerAlphabeta;
 import com.sangnd.faceme.core.control.ComputerMinmax;
 import com.sangnd.faceme.core.control.MoveGeneratorNormal;
 import com.sangnd.faceme.core.model.chess.Advisor;
@@ -82,8 +83,9 @@ public class Match {
 	}
 
 	private void initComputer() {
-		computer = new ComputerMinmax(this,
-				(currentSide == Side.ENERMY) ? Side.FRIEND : Side.ENERMY);
+		//computer = new ComputerMinmax(this,
+		//		(currentSide == Side.ENERMY) ? Side.FRIEND : Side.ENERMY);
+		computer = new ComputerAlphabeta(this, (currentSide == Side.ENERMY) ? Side.FRIEND : Side.ENERMY);
 	}
 
 	/**
