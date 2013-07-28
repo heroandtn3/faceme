@@ -89,20 +89,21 @@ public class ComputerAlphabeta implements Computer {
 			
 			List<ChessPosition[]> moves = board.getMoves(side);
 			for (ChessPosition[] move : moves) {
-				if (best < beta) {
-					if (best > alpha) {
-						alpha = best;
-					}
-					board.move(move[0], move[1]);
-					int value = -alphabeta(
-							-beta, -alpha, depth - 1, 
-							(side == Side.ENERMY) ? Side.FRIEND : Side.ENERMY);
-					board.undo(1, false);
-					if (value > best) {
-						best = value;
-						if (depth == 4) {
-							bestMove = move;
-						}
+				if (best >= beta) {
+					break;
+				}
+				if (best > alpha) {
+					alpha = best;
+				}
+				board.move(move[0], move[1]);
+				int value = -alphabeta(
+						-beta, -alpha, depth - 1, 
+						(side == Side.ENERMY) ? Side.FRIEND : Side.ENERMY);
+				board.undo(1, false);
+				if (value > best) {
+					best = value;
+					if (depth == 4) {
+						bestMove = move;
 					}
 				}
 			}
