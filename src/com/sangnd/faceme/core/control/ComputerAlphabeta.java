@@ -19,6 +19,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.sangnd.faceme.core.control;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import com.sangnd.faceme.core.model.Match;
@@ -45,8 +48,12 @@ public class ComputerAlphabeta extends BaseComputer {
 	protected ChessMove getBestMove() {
 		bestMove = null;
 		count = 0;
+		long begin = new Date().getTime();
 		alphabeta(Integer.MIN_VALUE + 1, Integer.MAX_VALUE, 4, side);
+		long end = new Date().getTime();
+		System.out.println("Done in: " + (end - begin));
 		System.out.println("So lan goi: " + count);
+		
 		return bestMove;
 	
 	}
@@ -58,7 +65,7 @@ public class ComputerAlphabeta extends BaseComputer {
 		} else {
 			int best = Integer.MIN_VALUE + 1;
 			
-			List<ChessMove> moves = board.getMoves(side);
+			List<ChessMove> moves = getSortedMove(side);
 			for (ChessMove move : moves) {
 				if (best >= beta) {
 					break;
@@ -79,6 +86,52 @@ public class ComputerAlphabeta extends BaseComputer {
 				}
 			}
 			return best;
+		}
+	}
+	
+	private List<ChessMove> getSortedMove(Side side) {
+		List<ChessMove> moves = board.getMoves(side);
+		for (ChessMove move : moves) {
+			move.setScore(value(board.getPiece(move.getNewPos())));
+		}
+		Collections.sort(moves, new Comparator<ChessMove>() {
+
+			@Override
+			public int compare(ChessMove o1, ChessMove o2) {
+				return o2.getScore() - o1.getScore();
+			}
+		});
+		return moves;
+	}
+	
+	private int value(int code) {
+		if (code < 0) {
+			code = -code;
+		}
+		switch (code) {
+			case 1:
+				// tuong
+				return 6000;
+			case 2:
+				// sy
+				return 120;
+			case 3:
+				// tuong
+				return 120;
+			case 4:
+				// xe
+				return 600;
+			case 5:
+				// phao
+				return 285;
+			case 6:
+				// ma
+				return 270;
+			case 7:
+				// tot
+				return 30;
+			default:
+				return 0;
 		}
 	}
 
