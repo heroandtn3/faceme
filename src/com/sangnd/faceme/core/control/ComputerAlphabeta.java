@@ -21,56 +21,29 @@ package com.sangnd.faceme.core.control;
 
 import java.util.List;
 
-import com.sangnd.faceme.core.model.Board;
 import com.sangnd.faceme.core.model.ChessPosition;
 import com.sangnd.faceme.core.model.Match;
 import com.sangnd.faceme.core.model.Side;
-import com.sangnd.faceme.event.SelectChessEvent;
-import com.sangnd.faceme.event.SelectChessListener;
 
 /**
  * @author heroandtn3
  * @date Jul 27, 2013
  */
-public class ComputerAlphabeta implements Computer {
+public class ComputerAlphabeta extends BaseComputer {
 
-	private SelectChessListener listener;
 	private ChessPosition[] bestMove;
 	private int count;
-	private Board board;
-	private Side side;
+	
 
 	/**
 	 * 
 	 */
 	public ComputerAlphabeta(Match match, Side side) {
-		this.side = side;
-		this.board = match.getBoard();
+		super(match, side);
 	}
 
 	@Override
-	public void addSelectChessListener(SelectChessListener listener) {
-		this.listener = listener;
-		
-	}
-
-	@Override
-	public Side getSide() {
-		return side;
-	}
-
-	@Override
-	public void move() {
-		ChessPosition[] mv = getBestMove(null);
-		if (mv == null) throw new NullPointerException("Nuoc di tra ve la null");
-		System.out.println(mv[0].getRow() + " - " + mv[0].getCol());
-		System.out.println(mv[1].getRow() + " - " + mv[1].getCol());
-		listener.onSelect(new SelectChessEvent(mv[0]));
-		listener.onSelect(new SelectChessEvent(mv[1]));
-		
-	}
-
-	private ChessPosition[] getBestMove(Object object) {
+	protected ChessPosition[] getBestMove() {
 		bestMove = null;
 		count = 0;
 		alphabeta(Integer.MIN_VALUE + 1, Integer.MAX_VALUE, 4, side);

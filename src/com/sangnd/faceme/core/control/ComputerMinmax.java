@@ -19,23 +19,17 @@ package com.sangnd.faceme.core.control;
 
 import java.util.List;
 
-import com.sangnd.faceme.core.model.Board;
 import com.sangnd.faceme.core.model.ChessPosition;
-import com.sangnd.faceme.core.model.Level;
 import com.sangnd.faceme.core.model.Match;
 import com.sangnd.faceme.core.model.Side;
-import com.sangnd.faceme.event.SelectChessEvent;
-import com.sangnd.faceme.event.SelectChessListener;
 
 /**
  * @author heroandtn3
  * @date Jan 7, 2013
  */
-public class ComputerMinmax implements Computer {
+public class ComputerMinmax extends BaseComputer {
 	
-	private Side side;
-	private SelectChessListener listener;
-	private Board board;
+
 	private ChessPosition[] bestMove;
 	private int count;
 
@@ -43,11 +37,11 @@ public class ComputerMinmax implements Computer {
 	 * 
 	 */
 	public ComputerMinmax(Match match, Side side) {
-		this.board = match.getBoard();
-		this.side = side;
+		super(match, side);
 	}
 
-	private ChessPosition[] getBestMove(Level level) {
+	@Override
+	protected ChessPosition[] getBestMove() {
 		bestMove = null;
 		count = 0;
 		minimax(3, side);
@@ -78,26 +72,6 @@ public class ComputerMinmax implements Computer {
 			}
 			return best;
 		}
-	}
-
-	@Override
-	public Side getSide() {
-		return this.side;
-	}
-
-	@Override
-	public void move() {
-		ChessPosition[] mv = getBestMove(null);
-		if (mv == null) throw new NullPointerException("Nuoc di tra ve la null");
-		System.out.println(mv[0].getRow() + " - " + mv[0].getCol());
-		System.out.println(mv[1].getRow() + " - " + mv[1].getCol());
-		listener.onSelect(new SelectChessEvent(mv[0]));
-		listener.onSelect(new SelectChessEvent(mv[1]));
-	}
-
-	@Override
-	public void addSelectChessListener(SelectChessListener listener) {
-		this.listener = listener;
 	}
 
 }
