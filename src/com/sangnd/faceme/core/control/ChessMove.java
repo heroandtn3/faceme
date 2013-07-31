@@ -19,26 +19,40 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.sangnd.faceme.core.control;
 
-import java.util.List;
-
-import com.sangnd.faceme.core.model.Board;
-import com.sangnd.faceme.core.model.Side;
-
-
-
-
+import com.sangnd.faceme.core.model.ChessPosition;
 
 /**
  * @author heroandtn3
- * @date Jan 30, 2013
+ * @date Jul 31, 2013
  */
-public interface MoveGenerator {
+public class ChessMove {
+
+	private ChessPosition newPos;
+	private ChessPosition oldPos;
+	private int score;
 
 	/**
-	 * Ham liet ke tat ca cac nuoc di co the
-	 * @param side quan do (Side.FRIEND) hoac quan den (Side.ENERMY)
-	 * @return danh sach lien ket
+	 * 
 	 */
-	public abstract List<ChessMove> getMoves(Board board, Side side);
+	public ChessMove(ChessPosition oldPos, ChessPosition newPos) {
+		this.oldPos = oldPos;
+		this.newPos = newPos;
+	}
+	
+	public ChessPosition getNewPos() {
+		return newPos;
+	}
+	
+	public ChessPosition getOldPos() {
+		return oldPos;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
 
 }

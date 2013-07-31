@@ -21,7 +21,6 @@ package com.sangnd.faceme.core.control;
 
 import java.util.List;
 
-import com.sangnd.faceme.core.model.ChessPosition;
 import com.sangnd.faceme.core.model.Match;
 import com.sangnd.faceme.core.model.Side;
 
@@ -31,7 +30,7 @@ import com.sangnd.faceme.core.model.Side;
  */
 public class ComputerAlphabeta extends BaseComputer {
 
-	private ChessPosition[] bestMove;
+	private ChessMove bestMove;
 	private int count;
 	
 
@@ -43,12 +42,11 @@ public class ComputerAlphabeta extends BaseComputer {
 	}
 
 	@Override
-	protected ChessPosition[] getBestMove() {
+	protected ChessMove getBestMove() {
 		bestMove = null;
 		count = 0;
 		alphabeta(Integer.MIN_VALUE + 1, Integer.MAX_VALUE, 4, side);
 		System.out.println("So lan goi: " + count);
-		//bestMove = new ChessPosition[] {new ChessPosition(0, 0), new ChessPosition(1, 0)};
 		return bestMove;
 	
 	}
@@ -60,15 +58,15 @@ public class ComputerAlphabeta extends BaseComputer {
 		} else {
 			int best = Integer.MIN_VALUE + 1;
 			
-			List<ChessPosition[]> moves = board.getMoves(side);
-			for (ChessPosition[] move : moves) {
+			List<ChessMove> moves = board.getMoves(side);
+			for (ChessMove move : moves) {
 				if (best >= beta) {
 					break;
 				}
 				if (best > alpha) {
 					alpha = best;
 				}
-				board.move(move[0], move[1]);
+				board.move(move.getOldPos(), move.getNewPos());
 				int value = -alphabeta(
 						-beta, -alpha, depth - 1, 
 						(side == Side.ENERMY) ? Side.FRIEND : Side.ENERMY);

@@ -19,6 +19,8 @@ package com.sangnd.faceme.core.model;
 
 import java.util.List;
 
+import com.sangnd.faceme.core.control.ChessMove;
+
 /**
  * @author heroandtn3
  * @date Jan 7, 2013
@@ -58,5 +60,5 @@ public interface Board {
 	
 	public int value();
 	
-	public List<ChessPosition[]> getMoves(Side side);
+	public List<ChessMove> getMoves(Side side);
 }

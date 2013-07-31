@@ -20,9 +20,9 @@ package com.sangnd.faceme.core.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sangnd.faceme.core.control.ChessMove;
 import com.sangnd.faceme.core.control.Computer;
 import com.sangnd.faceme.core.control.ComputerAlphabeta;
-import com.sangnd.faceme.core.control.ComputerMinmax;
 import com.sangnd.faceme.core.control.MoveGeneratorNormal;
 import com.sangnd.faceme.core.model.chess.Advisor;
 import com.sangnd.faceme.core.model.chess.Bishop;
@@ -125,7 +125,7 @@ public class Match {
 		}
 
 		// het co khi: doi phuong khong co nuoc nao de di
-		List<ChessPosition[]> allPos = moveGenerator.getMoves(board, nextSide);
+		List<ChessMove> allPos = moveGenerator.getMoves(board, nextSide);
 		if (allPos.size() == 0) {
 			System.out.println("TH2");
 			if (nextSide == Side.ENERMY) {
@@ -138,10 +138,10 @@ public class Match {
 		// het co khi: doi phuong di moi nuoc van khong thoat khoi chieu tuong
 		if (warnKing) {
 			boolean hasEscapeMove = false;
-			for (ChessPosition[] mv : allPos) {
-				board.move(mv[0], mv[1]);
+			for (ChessMove mv : allPos) {
+				board.move(mv.getOldPos(), mv.getNewPos());
 
-				List<ChessPosition[]> allPosCanMv = moveGenerator.getMoves(
+				List<ChessMove> allPosCanMv = moveGenerator.getMoves(
 						board, currentSide);
 				// chi can 1 nuoc di de chong chieu tuong la du
 				if (!checkWarnKing(board.getTable(), allPosCanMv, currentSide)) {
@@ -178,7 +178,7 @@ public class Match {
 		return checkWarnKing(null, null, side);
 	}
 
-	private boolean checkWarnKing(int[][] table, List<ChessPosition[]> allPos,
+	private boolean checkWarnKing(int[][] table, List<ChessMove> allPos,
 			Side side) {
 		if (table == null) {
 			table = board.getTable();
@@ -210,8 +210,8 @@ public class Match {
 		}
 
 		if (kingRow != -1) {
-			for (ChessPosition[] pos : allPos) {
-				if (pos[1].getRow() == kingRow && pos[1].getCol() == kingCol) {
+			for (ChessMove pos : allPos) {
+				if (pos.getNewPos().getRow() == kingRow && pos.getNewPos().getCol() == kingCol) {
 					return true;
 				}
 			}

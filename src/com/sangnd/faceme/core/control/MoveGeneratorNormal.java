@@ -38,8 +38,8 @@ import com.sangnd.faceme.core.model.Side;
 public class MoveGeneratorNormal implements MoveGenerator {
 
 	@Override
-	public List<ChessPosition[]> getMoves(Board board, Side side) {
-		List<ChessPosition[]> allMoves = new ArrayList<ChessPosition[]>();
+	public List<ChessMove> getMoves(Board board, Side side) {
+		List<ChessMove> allMoves = new ArrayList<ChessMove>();
 
 		List<ChessPosition> posCanMove;
 		int[][] table = board.getTable();
@@ -57,7 +57,7 @@ public class MoveGeneratorNormal implements MoveGenerator {
 					
 					// them tat ca cac nuoc di vao list
 					for (ChessPosition pos : posCanMove) {
-						allMoves.add(new ChessPosition[] {currentPos, pos});
+						allMoves.add(new ChessMove(currentPos, pos));
 					}
 				}
 			}

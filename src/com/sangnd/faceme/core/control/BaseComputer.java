@@ -20,7 +20,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package com.sangnd.faceme.core.control;
 
 import com.sangnd.faceme.core.model.Board;
-import com.sangnd.faceme.core.model.ChessPosition;
 import com.sangnd.faceme.core.model.Level;
 import com.sangnd.faceme.core.model.Match;
 import com.sangnd.faceme.core.model.Side;
@@ -67,15 +66,14 @@ public abstract class BaseComputer implements Computer {
 
 	@Override
 	public void move() {
-		ChessPosition[] mv = getBestMove();
+		ChessMove mv = getBestMove();
 		if (mv == null) throw new NullPointerException("Nuoc di tra ve la null");
-		System.out.println(mv[0].getRow() + " - " + mv[0].getCol());
-		System.out.println(mv[1].getRow() + " - " + mv[1].getCol());
-		listener.onSelect(new SelectChessEvent(mv[0]));
-		listener.onSelect(new SelectChessEvent(mv[1]));
+
+		listener.onSelect(new SelectChessEvent(mv.getOldPos()));
+		listener.onSelect(new SelectChessEvent(mv.getNewPos()));
 		
 	}
 
-	protected abstract ChessPosition[] getBestMove();
+	protected abstract ChessMove getBestMove();
 
 }

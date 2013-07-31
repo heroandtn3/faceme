@@ -24,6 +24,7 @@ package com.sangnd.faceme.core.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sangnd.faceme.core.control.ChessMove;
 import com.sangnd.faceme.core.control.Evaluator;
 import com.sangnd.faceme.core.control.EvaluatorNormal;
 import com.sangnd.faceme.core.control.MoveGenerator;
@@ -38,7 +39,7 @@ public class BoardImpl implements Board {
 	private int[][] table;
 	private int[][] shortTable;
 	private boolean shortTableOutdate;
-	private List<ChessPosition[]> historyMove = new ArrayList<ChessPosition[]>();
+	private List<ChessMove> historyMove = new ArrayList<ChessMove>();
 	private List<int[]> historyChess = new ArrayList<int[]>();
 	private int undoIndexPoint = 0;
 	private Evaluator evaluator = new EvaluatorNormal();
@@ -102,7 +103,7 @@ public class BoardImpl implements Board {
 		shortTableOutdate = true;
 		
 		// luu lai history
-		historyMove.add(new ChessPosition[] {oldPos, newPos});
+		historyMove.add(new ChessMove(oldPos, newPos));
 		historyChess.add(new int[] {oldChess, newChess});
 	}
 
@@ -137,10 +138,10 @@ public class BoardImpl implements Board {
 		}
 		
 		for (int i = 0; i < times; i++) {
-			int oldRow = historyMove.get(index)[0].getRow();
-			int oldCol = historyMove.get(index)[0].getCol();
-			int newRow = historyMove.get(index)[1].getRow();
-			int newCol = historyMove.get(index)[1].getCol();
+			int oldRow = historyMove.get(index).getOldPos().getRow();
+			int oldCol = historyMove.get(index).getOldPos().getCol();
+			int newRow = historyMove.get(index).getNewPos().getRow();
+			int newCol = historyMove.get(index).getNewPos().getCol();
 			
 			int oldChess = historyChess.get(index)[0];
 			int newChess = historyChess.get(index)[1];
@@ -169,10 +170,10 @@ public class BoardImpl implements Board {
 			}
 			
 			for (int i = undoIndexPoint; i <= targetIndex; i++) {
-				int oldRow = historyMove.get(i)[0].getRow();
-				int oldCol = historyMove.get(i)[0].getCol();
-				int newRow = historyMove.get(i)[1].getRow();
-				int newCol = historyMove.get(i)[1].getCol();
+				int oldRow = historyMove.get(i).getOldPos().getRow();
+				int oldCol = historyMove.get(i).getOldPos().getCol();
+				int newRow = historyMove.get(i).getNewPos().getRow();
+				int newCol = historyMove.get(i).getNewPos().getCol();
 				
 				int oldChess = historyChess.get(i)[0];
 				
@@ -193,7 +194,7 @@ public class BoardImpl implements Board {
 	}
 
 	@Override
-	public List<ChessPosition[]> getMoves(Side side) {
+	public List<ChessMove> getMoves(Side side) {
 		return moveGenerator.getMoves(this, side);
 	}
 
