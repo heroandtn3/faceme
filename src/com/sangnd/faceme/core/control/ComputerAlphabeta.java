@@ -108,31 +108,7 @@ public class ComputerAlphabeta extends BaseComputer {
 		if (code < 0) {
 			code = -code;
 		}
-		switch (code) {
-			case 1:
-				// tuong
-				return 6000;
-			case 2:
-				// sy
-				return 120;
-			case 3:
-				// tuong
-				return 120;
-			case 4:
-				// xe
-				return 600;
-			case 5:
-				// phao
-				return 285;
-			case 6:
-				// ma
-				return 270;
-			case 7:
-				// tot
-				return 30;
-			default:
-				return 0;
-		}
+		return EvaluatorNormal.VALUE[code];
 	}
 
 }
