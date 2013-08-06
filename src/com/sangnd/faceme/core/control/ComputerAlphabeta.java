@@ -63,33 +63,34 @@ public class ComputerAlphabeta extends BaseComputer {
 		if (depth == 0) {
 			return -board.value();
 		} else {
-			int best = Integer.MIN_VALUE + 1;
-			
 			List<ChessMove> moves = getSortedMove(side);
 			for (ChessMove move : moves) {
-				if (best >= beta) {
-					break;
+				int pie = board.getPiece(move.getNewPos()); 
+				if (pie == -1) {
+					return Integer.MAX_VALUE - depth;
 				}
-				if (best > alpha) {
-					alpha = best;
-				}
+				
 				board.move(move.getOldPos(), move.getNewPos());
 				int value = -alphabeta(
 						-beta, -alpha, depth - 1, 
 						(side == Side.ENERMY) ? Side.FRIEND : Side.ENERMY);
 				board.undo(1, false);
-				if (value > best) {
-					best = value;
+				if (value > alpha) {
+					alpha = value;
 					if (depth == 4) {
 						bestMove = move;
 					}
 				}
+				
+				if (alpha >= beta) {
+					break;
+				}
 			}
-			return best;
+			return alpha;
 		}
 	}
 	
-	private List<ChessMove> getSortedMove(Side side) {
+	private List<ChessMove> getSortedMove(final Side side) {
 		List<ChessMove> moves = board.getMoves(side);
 		for (ChessMove move : moves) {
 			move.setScore(value(board.getPiece(move.getNewPos())));
