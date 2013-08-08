@@ -173,14 +173,14 @@ public class BoardViewImpl extends JPanel implements BoardView, MouseListener, H
 	}
 
 	private void drawBoard(Graphics g) {
-		System.out.println("draw board");
+		//System.out.println("draw board");
 		
 		g.drawImage(imgBoard, 0, 0, null);
 	}
 
 	private void drawChess(Graphics g) {
 		if (board == null) return;
-		System.out.println("draw chess");
+		//System.out.println("draw chess");
 		int[][] table = board.getTable();
 		for (int row = 0; row < 10; row++) {
 			for (int col = 0; col < 9; col++) {
