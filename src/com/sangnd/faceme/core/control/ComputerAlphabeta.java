@@ -67,7 +67,7 @@ public class ComputerAlphabeta extends BaseComputer {
 			for (ChessMove move : moves) {
 				int pie = board.getPiece(move.getNewPos()); 
 				if (pie == -1) {
-					return Integer.MAX_VALUE - depth;
+					return 100000 + depth;
 				}
 				
 				board.move(move.getOldPos(), move.getNewPos());
