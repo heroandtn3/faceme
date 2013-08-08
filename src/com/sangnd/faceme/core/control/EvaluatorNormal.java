@@ -27,7 +27,7 @@ import com.sangnd.faceme.core.model.Board;
  */
 public class EvaluatorNormal implements Evaluator {
 	
-	public final static int[] VALUE = new int[] {0, 6000, 120, 120, 600, 285, 270, 30}; 
+	public final static int[] VALUE = new int[] {0, 9000, 200, 250, 1000, 500, 450, 100}; 
 
 	/**
 	 * 
