@@ -92,8 +92,28 @@ public class ComputerAlphabeta extends BaseComputer {
 	
 	private List<ChessMove> getSortedMove(final Side side) {
 		List<ChessMove> moves = board.getMoves(side);
+		int score, newRow, newCol, pie, tmp;
+		int oldRow, oldCol;
 		for (ChessMove move : moves) {
-			move.setScore(value(board.getPiece(move.getNewPos())));
+			score = 0;
+			oldRow = move.getOldPos().getRow();
+			oldCol = move.getOldPos().getCol();
+			newRow = move.getNewPos().getRow();
+			newCol = move.getNewPos().getCol();
+			
+			// gia tri quan co di toi
+			pie = board.getPiece(move.getOldPos());
+			tmp = EvaluatorNormal.value(pie, newRow, newCol) - EvaluatorNormal.value(pie, oldRow, oldCol);
+			score += tmp;
+			
+			// cong them gia tri quan co neu an duoc
+			pie = board.getPiece(move.getNewPos());
+			if (pie != 0) {
+				tmp = EvaluatorNormal.value(pie, newRow, newCol);
+				score += Math.abs(tmp);
+			}
+			//System.out.println("Score: " + score);
+			move.setScore(score);
 		}
 		Collections.sort(moves, new Comparator<ChessMove>() {
 
@@ -103,13 +123,6 @@ public class ComputerAlphabeta extends BaseComputer {
 			}
 		});
 		return moves;
-	}
-	
-	private int value(int code) {
-		if (code < 0) {
-			code = -code;
-		}
-		return EvaluatorNormal.VALUE[code];
 	}
 
 }
